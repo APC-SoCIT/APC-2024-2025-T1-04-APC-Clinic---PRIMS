@@ -18,7 +18,7 @@ export default {
                 nunito: ['Nunito', 'sans-serif'],
             },
             colors: {
-                'p': rims-yellow{
+                'prims-yellow': {
                     1: '#F4BF4F',
                     2: '#ECBA51',
                     3: '#E7B54D',
