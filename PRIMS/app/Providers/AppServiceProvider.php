@@ -19,6 +19,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if (App::environment(['staging', 'production'])) {
+            URL::forceScheme('https');
+        }
+
+        View::composer('*', function ($view) {
+            $user = Auth::user();
+            $patient = $user ? $user->patient : null;
+
+            $view->with('patient', $patient);
+        });
     }
 }
