@@ -1,1 +1,0 @@
-<a href="/appointment" class="text-prims-azure-500 font-bold text-2xl p-6 underline hover:text-white transition ease-in-out duration-150"> {{$slot}} </a>
