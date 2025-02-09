@@ -6,6 +6,7 @@ use App\Http\Controllers\AppointmentHistoryController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ClinicStaffController;
+use App\Http\Controllers\ReportController;
 use App\Mail\AppointmentNotif;
 
 $url = config('app.url');
@@ -83,13 +84,7 @@ Route::middleware([
     })->name('medical-records');
 
     // Summary report route
-    Route::get('/staff/summary-report', function () {
-        $user = Auth::user();
-        if (!$user || !$user->hasRole('clinic staff')) {
-            abort(403); // Forbidden
-        }
-        return view('staff-summary-report');
-    })->name('summary-report');
+    Route::get('/staff/summary-report', [ReportController::class, 'summaryReport'])->name('summary-report');
 
     // Calendar route
     Route::get('/staff/calendar', function () {
