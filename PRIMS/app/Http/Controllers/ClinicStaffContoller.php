@@ -9,18 +9,13 @@ use Illuminate\Support\Facades\Auth;
 class ClinicStaffContoller extends Controller
 {
 
-    /**
-     * Display a listing of the patients.
-     */
     public function index()
     {
         $clinicstaffs = ClinicStaff::all();
         return view('clinicstaffs.index', compact('clinicstaffs'));
     }
 
-     /**
-     * Show the details of a specific patient.
-     */
+    
     public function show($id)
     {
         $clinicstaff = ClinicStaff::findOrFail($id);

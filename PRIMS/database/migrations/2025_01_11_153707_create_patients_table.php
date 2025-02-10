@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('patients', function (Blueprint $table) {
             $table->id(); // Primary key
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('apc_id_number')->unique();
             $table->string('first_name');
             $table->string('middle_initial', 1)->nullable(); // Optional, single character
             $table->string('last_name');

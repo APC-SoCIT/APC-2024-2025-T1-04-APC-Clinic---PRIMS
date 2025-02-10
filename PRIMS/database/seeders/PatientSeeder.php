@@ -23,6 +23,7 @@ class PatientSeeder extends Seeder
                 'gender' => 'Female',
                 'date_of_birth' => '2003-12-29',
                 'contact_number' => '09123456789',
+                'apc_id_number' => '2022-140224',
             ],
             [
                 'email' => 'eddaduya@student.apc.edu.ph',
@@ -32,6 +33,7 @@ class PatientSeeder extends Seeder
                 'gender' => 'Female',
                 'date_of_birth' => '2003-01-15',
                 'contact_number' => '09127894561',
+                'apc_id_number' => '2022-140225',
             ],
             [
                 'email' => 'cknailgas@student.apc.edu.ph',
@@ -41,6 +43,7 @@ class PatientSeeder extends Seeder
                 'gender' => 'Female',
                 'date_of_birth' => '2002-10-05',
                 'contact_number' => '09129087654',
+                'apc_id_number' => '2022-140226',
             ],
             [
                 'email' => 'barabajante3@student.apc.edu.ph',
@@ -50,6 +53,7 @@ class PatientSeeder extends Seeder
                 'gender' => 'Male',
                 'date_of_birth' => '2001-05-12',
                 'contact_number' => '09134567890',
+                'apc_id_number' => '2022-140227',
             ],
         ];
 
@@ -67,6 +71,7 @@ class PatientSeeder extends Seeder
                     'gender' => $patient['gender'],
                     'date_of_birth' => $patient['date_of_birth'],
                     'contact_number' => $patient['contact_number'],
+                    'apc_id_number' => $patient['apc_id_number'],
                 ]);
             }
         }

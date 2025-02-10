@@ -33,6 +33,11 @@
 
     @livewireScripts
 
+        @if(auth()->check() && auth()->user()->hasRole('patient'))
+        <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/49096662.js"></script>
+        @endif
+        
+    </body>
     @stack('scripts') {{-- Allows JavaScript files to be pushed into layout --}}
 </body>
 </html>

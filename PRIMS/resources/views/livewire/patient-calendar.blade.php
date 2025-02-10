@@ -3,18 +3,39 @@
         
         <!-- Doctor Information Section -->
         <div class="col-span-2 row-span-12 bg-white rounded-md shadow-md text-center">
-            <div class="p-5 mt-8">
-                <img src="/img/placeholder-pfp.png" alt="placeholder pfp" class="w-24 h-24 mx-auto">
-                <h2 class="font-bold text-xl mt-4">[Available Doctor]</h2>
-                <hr class="border-gray-300 border-2 rounded-full m-4">
-                <p class="text-gray-700 text-center mx-8">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                </p>
+            <div class="flex justify-center mt-6 bg-prims-yellow-5">
+                <h1 class="text-xl font-bold">Choose a Doctor</h1>
             </div>
+
+            @if(count($doctors) > 0)
+                <div class="mt-3">
+                    @foreach($doctors as $doctor)
+                        <div class="flex items-center justify-center p-2 rounded cursor-pointer"
+                            wire:click="selectDoctor({{ $doctor->id }})">
+                            <div class="w-4/5 border rounded shadow-sm p-3 transition-all duration-150 transform 
+                                mb-3 hover:scale-105 {{ $selectedDoctor && $selectedDoctor->id == $doctor->id ? 'bg-prims-azure-100 text-white' : ''}}">
+                            @if($doctor)
+                                <img src="{{ asset($doctor->clinic_staff_image) }}" alt="Profile Picture" class="rounded-full w-18 h-18 mx-auto">
+                            @else
+                                <p>No profile picture available.</p>
+                            @endif
+                                <p class="font-semibold pt-3">
+                                    Dr. {{ $doctor->clinic_staff_fname }} {{ $doctor->clinic_staff_lname }}
+                                </p>
+                                <p class="text-sm pb-3">{{ $doctor->email }}</p>
+                                <hr class="w-3/4 mx-auto">
+                                <p class="text-sm pt-3">{{ $doctor->clinic_staff_desc}}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <p class="text-gray-500 text-center mt-3">No doctors available.</p>
+            @endif
         </div>
 
         <!-- Calendar Section -->
-        <div class="col-span-5 row-span-full bg-white rounded-md shadow-md">
+        <div class="col-span-5 row-span-12 bg-white rounded-md shadow-md">
             <div class="flex justify-center mt-6 bg-prims-yellow-5">
                 <h1 class="text-xl font-bold">Choose a Date</h1>
             </div>
@@ -53,7 +74,7 @@
 
                     <div class="p-2 rounded-lg 
                         {{ $day['isToday'] ? 'text-blue-600' : '' }} 
-                        {{ $selectedDate === $day['date'] ? 'bg-prims-yellow-5' : '' }} 
+                        {{ $selectedDate === $day['date'] ? 'bg-prims-azure-100 text-white' : '' }} 
                         {{ ($isPastDate || $isSunday) ? 'text-gray-400 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-200' }}"
                         @if(!($isPastDate || $isSunday)) wire:click="selectDate({{ $day['day'] }})" @endif>
                         {{ $day['day'] }}
@@ -69,11 +90,11 @@
             <div class="flex justify-center mt-6 bg-prims-yellow-5">
                 <h1 class="text-xl font-bold">Choose a Time</h1>
             </div>
-            <div class="grid grid-cols-4 gap-4 px-4 py-4 font-bold text-center">
+            <div class="grid grid-cols-5 gap-4 px-4 py-4 font-bold text-center">
                 @foreach($availableTimes as $time)
                     <button wire:click="selectTime('{{ $time }}')" 
                             class="p-2 rounded-lg cursor-pointer bg-gray-200 hover:bg-gray-300 
-                                {{ $selectedTime == $time ? 'bg-green-500 text-white' : '' }}">
+                                {{ $selectedTime == $time ? 'bg-prims-azure-100 text-white' : '' }}">
                         {{ $time }}
                     </button>
                 @endforeach
@@ -93,8 +114,8 @@
         @if($isConfirming)
             <div class="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
                 <div class="bg-white p-6 rounded-lg shadow-lg max-w-sm">
-                    <h3 class="text-lg font-semibold pb-3">Confirm Your Appointment</h3>
-                    <p>Before submitting, is <strong>{{ \Carbon\Carbon::parse($selectedDate)->format('M. d, Y') }}</strong> at <strong>{{ $selectedTime }}</strong> the correct date and time for your appointment?</p>
+                    <h3 class="text-3xl font-bold pb-3 text-center">Are you sure?</h3>
+                    <p class="text-center">Before submitting, is <strong><span class="text-red-500">{{ \Carbon\Carbon::parse($selectedDate)->format('M. d, Y') }}</span></strong> at <strong><span class="text-red-500">{{ $selectedTime }}</span></strong> the correct date and time for your appointment with <strong><span class="text-red-500">Dr. {{ $selectedDoctor->clinic_staff_fname }} {{ $selectedDoctor->clinic_staff_lname }}</span></strong>?</p>
                     <div class="mt-4 flex justify-center pb-3 gap-2">
                     @if($hasUpcomingAppointment)
                         <x-prims-sub-button1 class="opacity-50 cursor-not-allowed" disabled>
@@ -108,18 +129,34 @@
                         <button wire:click="resetSelection" class="px-4 text-black hover:text-prims-yellow-1">No</button>
                     </div>
                     @if($hasUpcomingAppointment)
-                    <span class="text-sm text-red-500 text-center inline-block">You already have an <strong>upcoming</strong> or <strong>pending</strong> appointment.</span>
+                        <span class="text-sm text-red-500 text-center inline-block">You already have an <strong>upcoming</strong> or <strong>pending</strong> appointment.</span>
                     @endif
                 </div>
             </div>
         @endif
 
-        @if (session()->has('success'))
-            <div class="text-green-600 font-bold">{{ session('success') }}</div>
+        @if($showSuccessModal)
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
+                <div class="bg-white p-4 rounded-lg shadow-lg max-w-sm">
+                    <h3 class="text-3xl font-bold pb-3 text-center">Thank you!</h3>
+                    <p class="text-center">@php echo $successMessage; @endphp</p>
+                    <div class="mt-4 flex justify-center">
+                        <x-prims-sub-button1 wire:click="closeSuccessModal">OK</x-prims-sub-button1>
+                    </div>
+                </div>
+            </div>
         @endif
 
-        @if (session()->has('error'))
-            <div class="text-red-600 font-bold">{{ session('error') }}</div>
+        @if($showErrorModal)
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
+                <div class="bg-white p-4 rounded-lg shadow-lg max-w-sm">
+                    <h3 class="text-3xl font-semibold pb-3 text-red-600 text-center">Oops...</h3>
+                    <p>@php echo $errorMessage; @endphp</p>
+                    <div class="mt-4 flex justify-center">
+                        <x-prims-sub-button1 wire:click="closeErrorModal" >OK</x-prims-sub-button1>
+                    </div>
+                </div>
+            </div>
         @endif
 
     </div>
