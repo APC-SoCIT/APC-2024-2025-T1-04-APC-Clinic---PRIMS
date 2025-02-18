@@ -38,6 +38,4 @@
         @endif
         
     </body>
-    @stack('scripts') {{-- Allows JavaScript files to be pushed into layout --}}
-</body>
 </html>
