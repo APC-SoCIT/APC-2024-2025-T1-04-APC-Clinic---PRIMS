@@ -20,9 +20,6 @@
                         <button wire:click="sortBy('expiration_date')" class="text-black block w-full px-4 py-2 text-left hover:bg-gray-200">
                             Sort by Expiration
                         </button>
-                        <button wire:click="sortBy('quantity_received')" class="text-black block w-full px-4 py-2 text-left hover:bg-gray-200">
-                            Sort by Quantity
-                        </button>
                     </div>
                 </div>
 
