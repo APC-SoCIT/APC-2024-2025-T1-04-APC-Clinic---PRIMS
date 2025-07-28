@@ -1,11 +1,11 @@
-<nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+<nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50">
     <!-- Primary Navigation Menu -->
     <div class="max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('calendar') }}">
                         <x-application-mark class="block h-9 w-auto" />
                     </a>
                 </div>
@@ -23,9 +23,9 @@
                         {{ __('Appointment History') }}
                     </x-nav-link>
                     @elseif (Auth::user()->hasRole('clinic staff'))
-                    <x-nav-link href="{{ route('staff-dashboard') }}" :active="request()->routeIs('staff-dashboard')">
+                    <!-- <x-nav-link href="{{ route('staff-dashboard') }}" :active="request()->routeIs('staff-dashboard')">
                         {{ __('Dashboard') }}
-                    </x-nav-link>
+                    </x-nav-link> -->
                     <x-nav-link href="{{ route('calendar') }}" :active="request()->routeIs('calendar')">
                         {{ __('Calendar') }}
                     </x-nav-link>
@@ -70,13 +70,13 @@
 
                         <x-slot name="content">
                             <!-- Account Management -->
-                            <div class="block px-4 py-2 text-xs text-gray-400">
+                            <!-- <div class="block px-4 py-2 text-xs text-gray-400">
                                 {{ __('Manage Account') }}
                             </div>
 
                             <x-dropdown-link href="{{ route('profile.show') }}">
                                 {{ __('Profile') }}
-                            </x-dropdown-link>
+                            </x-dropdown-link> -->
 
                             @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
                                 <x-dropdown-link href="{{ route('api-tokens.index') }}">
@@ -143,9 +143,9 @@
 
             <div class="mt-3 space-y-1">
                 <!-- Account Management -->
-                <x-responsive-nav-link href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')">
+                <!-- <x-responsive-nav-link href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')">
                     {{ __('Profile') }}
-                </x-responsive-nav-link>
+                </x-responsive-nav-link> -->
 
                 @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
                     <x-responsive-nav-link href="{{ route('api-tokens.index') }}" :active="request()->routeIs('api-tokens.index')">

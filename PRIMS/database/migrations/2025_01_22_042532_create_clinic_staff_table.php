@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('clinic_staff_lname');
             $table->string('email')->unique();
             $table->string('clinic_staff_role');
+            $table->string('clinic_staff_desc')->nullable();
+            $table->string('clinic_staff_image')->nullable();
             $table->timestamps();
         });
     }

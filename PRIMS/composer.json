@@ -7,13 +7,15 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "barryvdh/laravel-dompdf": "^3.1",
         "google/apiclient": "^2.18",
         "laravel/framework": "^11.31",
         "laravel/jetstream": "^5.3",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.0",
-        "spatie/laravel-permission": "^6.10"
+        "spatie/laravel-permission": "^6.10",
+        "symfony/mailgun-mailer": "*"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.5",

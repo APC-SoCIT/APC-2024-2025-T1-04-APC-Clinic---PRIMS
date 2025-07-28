@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\App;
 use URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,6 +36,5 @@ class AppServiceProvider extends ServiceProvider
             $view->with('clinicstaff', $clinicstaff);
         });
 
-        Livewire::component('calendar', \App\Http\Livewire\Calendar::class);
     }
 }

@@ -1,4 +1,4 @@
-**Project Context **
+**Project Context**
 
 The PRIMS project at Asia Pacific College’s Clinic is designed to streamline healthcare access for students and faculty. By enabling effortless appointment scheduling with nurses and managing clinic inventory, PRIMS aims to enhance the efficiency and effectiveness of healthcare services on campus
 
@@ -17,15 +17,22 @@ ELECTIVE - GAME DEVELOPMENT
 ELECTIVE - GAME DEVELOPMENT
 
 **PRESENTATION LEAD** || Clart Kent Nailgas - Bachelor of Science and Information Technology with Specialization in Mobile and Internet Technologies
-ELECTIVE - GAME DEVELOPMENT
+ELECTIVE - AI AND UNSTRUCTURED DATA ANALYTICS
 
 **PROGRAMMING LEAD** || Erika Alessandra Daduya - Bachelor of Science and Information Technology with Specialization in Mobile and Internet Technologies
 ELECTIVE - GAME DEVELOPMENT
 
+**TEAM MEMBER** || John Keisuke Miyabe - Bachelor of Science and Information Technology with Specialization in Mobile and Internet Technologies
+ELECTIVE - GAME DEVELOPMENT
+
+**TEAM MEMBER** || Reycel John Emmanuel Carcueva - Bachelor of Science and Information Technology with Specialization in Mobile and Internet Technologies
+ELECTIVE - AI AND UNSTRUCTURED DATA ANALYTICS
+
+
 **Patient Record and Interaction Management System (PRIMS)**
 The Patient Record and Interaction Management System, also known as PRIMS, project at Asia Pacific College’s Clinic is designed to streamline healthcare access for students and faculty. By enabling effortless appointment scheduling with nurses and managing clinic inventory, PRIMS aims to enhance the efficiency and effectiveness of healthcare services on campus. 
 
-       ** Specific Goals**
+**Specific Goals**
 
 Locate Medical Records in 2 Minutes: By implementing an electronic health records (EHR) system, the project aims to reduce the time taken to locate a specific medical record to within 2 minutes. This will enhance the clinic's efficiency in handling patient information and providing timely care.
 
@@ -33,7 +40,7 @@ Zero Conflicts in Schedule: The online appointment scheduling system will ensure
 
 Generate Monthly Summary Reports in About 2 Minutes: The automated reporting tools will compile data from the clinic's operations and generate comprehensive monthly summary reports in approximately 2 minutes. This will significantly reduce the time and effort required for manual report generation, allowing staff to focus more on patient care.
 
-        **In pursuit of this goal, the project team aims to:**
+**In pursuit of this goal, the project team aims to:**
 
 Develop a User-Friendly Interface.
 Implement an Online Appointment Scheduling System.

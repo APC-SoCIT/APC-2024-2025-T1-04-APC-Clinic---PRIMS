@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use App\Models\Appointment;
 use App\Models\Patient;
 use App\Notifications\AppointmentBooked;
@@ -25,6 +26,24 @@ class AppointmentController extends Controller
         $appointments = $patient->appointments; // Use the relationship
 
         return view('appointments.index', compact('appointments'));
+    }
+
+    public function showAppointmentHistory()
+    {
+        $patient = Auth::user()->patient;
+
+        $appointmentHistory = Appointment::where('patient_id', Auth::id())
+            ->with(['doctor', 'updatedBy'])
+            ->orderBy('appointment_date', 'desc')
+            ->get();
+
+        $hasUpcomingAppointment = Appointment::where('patient_id', Auth::id())
+            ->where('appointment_date', '>=', now())
+            ->whereIn('status', ['approved'])
+            ->orderBy('appointment_date', 'asc')
+            ->first();
+
+        return view('appointment-history', compact('patient', 'appointmentHistory', 'hasUpcomingAppointment'));
     }
 
     // for patients booking their own appointments
@@ -50,7 +69,7 @@ class AppointmentController extends Controller
 
         $appointment->save();
         
-        Mail::to('prims.apc@gmail.com')->send(new ClinicAppointmentNotif($appointment, $selectedDate, $selectedTime));
+        Mail::to('primsapcclinic@gmail.com')->send(new ClinicAppointmentNotif($appointment, $selectedDate, $selectedTime));
 
         Mail::to(Auth::user()->email)->send(new PatientAppointmentNotif($appointment, $selectedDate, $selectedTime));
 

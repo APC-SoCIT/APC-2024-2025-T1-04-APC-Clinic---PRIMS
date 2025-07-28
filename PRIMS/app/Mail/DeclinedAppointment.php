@@ -18,15 +18,12 @@ class DeclinedAppointment extends Mailable
     public $selectedTime;
     public $reason;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct(Appointment $appointment)
+    public function __construct($appointment)
     {
         $this->appointment = $appointment;
         $this->selectedDate = $appointment->appointment_date;
         $this->selectedTime = $appointment->appointment_time;
-        $this->reason = $appointment->reason_for_visit;
+        $this->reason = $appointment->declination_reason;
     }
 
     public function build()

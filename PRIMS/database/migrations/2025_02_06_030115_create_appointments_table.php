@@ -14,15 +14,19 @@ return new class extends Migration
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
             $table->dateTime('appointment_date');
-            $table->enum('status', ['pending', 'approved', 'declined', 'completed', 'cancelled']);
+            $table->enum('status', ['pending', 'approved', 'declined', 'completed', 'cancelled','started']);
             $table->text('reason_for_visit');
             $table->text('cancellation_reason')->nullable();
+            $table->text('declination_reason')->nullable();
             $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->foreignId('clinic_staff_id')->nullable()->constrained('clinic_staff')->onDelete('set null');
+            $table->foreignId('status_updated_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
             $table->softDeletes();
         });
     }
+
+    public $timestamps = true;
 
     /**
      * Reverse the migrations.

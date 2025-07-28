@@ -20,10 +20,19 @@ class ClinicStaff extends Model
         'clinic_staff_minitial',
         'clinic_staff_lname',
         'clinic_staff_role',
+        'clinic_staff_image',
+        'clinic_staff_desc',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
+
 }
