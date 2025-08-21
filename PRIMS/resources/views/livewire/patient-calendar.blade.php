@@ -182,22 +182,23 @@
                     <h3 class="text-xl font-semibold pb-3 text-black text-center">How satisfied are you with the booking process?</h3>
                     <div class="flex justify-center gap-2">
                         <button 
-                            wire:click="$set('selectedEmoji', 'sad')" 
-                            class="px-4 py-2 rounded-lg {{ $selectedEmoji === 'sad' ? 'bg-red-100' : 'hover:bg-gray-200 active:bg-gray-300' }}">
+                            wire:click="$set('selectedEmoji', '{{ $selectedEmoji === 'sad' ? null : 'sad' }}')" 
+                            class="px-4 py-2 rounded-lg hover:bg-gray-200 active:bg-gray-300 {{ $selectedEmoji === 'sad' ? 'bg-red-200' : '' }}">
                             <img src="{{ asset('img/sad.png') }}" class="w-12 h-12">
                         </button>
 
                         <button 
-                            wire:click="$set('selectedEmoji', 'flat')" 
-                            class="px-4 py-2 rounded-lg {{ $selectedEmoji === 'flat' ? 'bg-gray-100' : 'hover:bg-gray-200 active:bg-gray-300' }}">
+                            wire:click="$set('selectedEmoji', '{{ $selectedEmoji === 'flat' ? null : 'flat' }}')" 
+                            class="px-4 py-2 rounded-lg hover:bg-gray-200 active:bg-gray-300 {{ $selectedEmoji === 'flat' ? 'bg-gray-200' : '' }}">
                             <img src="{{ asset('img/flat.png') }}" class="w-12 h-12">
                         </button>
 
                         <button 
-                            wire:click="$set('selectedEmoji', 'happy')" 
-                            class="px-4 py-2 rounded-lg {{ $selectedEmoji === 'happy' ? 'bg-green-100' : 'hover:bg-gray-200 active:bg-gray-300' }}">
+                            wire:click="$set('selectedEmoji', '{{ $selectedEmoji === 'happy' ? null : 'happy' }}')" 
+                            class="px-4 py-2 rounded-lg hover:bg-gray-200 active:bg-gray-300 {{ $selectedEmoji === 'happy' ? 'bg-green-200' : '' }}">
                             <img src="{{ asset('img/happy.png') }}" class="w-12 h-12">
                         </button>
+
                     </div>
                     @if($selectedEmoji)
                         <div>
@@ -207,8 +208,8 @@
                             <label for="anonymous" class="text-sm text-gray-500">Keep me anonymous</label>
                         </div>
                     @endif
-                    <div class="mt-4 flex justify-center">
-                        <x-prims-sub-button1 wire:click="cancelBookingFeedback">Submit</x-prims-sub-button1>
+                    <div class="mt-4 flex justify-center gap-2">
+                        <x-prims-sub-button1 wire:click="cancelBookingFeedback" class="bg-gray-200">Cancel</x-prims-sub-button1>
                         <x-prims-sub-button1 wire:click="submitBookingFeedback">Submit</x-prims-sub-button1>
                     </div>
                 </div>
