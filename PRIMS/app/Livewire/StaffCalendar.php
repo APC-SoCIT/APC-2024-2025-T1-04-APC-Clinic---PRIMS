@@ -312,6 +312,14 @@ class StaffCalendar extends Component
 
     public function saveSchedule()
     {
+        // ✅ Validation
+        if (empty($this->selectedDoctor) || empty($this->selectedDate) || empty($this->selectedTimes)) {
+            $this->dispatch('notify', style: 'danger', message: 'Please select a doctor, date, and at least one available time.');
+            return;
+        }
+
+
+        
         DoctorSchedule::updateOrCreate(
             ['doctor_id' => $this->selectedDoctor, 'date' => $this->selectedDate],
             ['available_times' => $this->selectedTimes]
@@ -323,7 +331,8 @@ class StaffCalendar extends Component
 
         $this->stopPolling = false;
 
-        session()->flash('success', 'Schedule saved successfully.');
+        $this->dispatch('notify', style: 'success', message: 'Schedule saved successfully.');
+
         $this->isEditingSchedule = false;
     }
 
