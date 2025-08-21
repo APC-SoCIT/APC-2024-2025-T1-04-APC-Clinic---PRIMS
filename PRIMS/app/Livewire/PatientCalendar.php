@@ -35,6 +35,7 @@ class PatientCalendar extends Component
     public $existingAppointment = false;
     public $allTimes = [];
     public $fullyBookedDates = [];
+    public $showBookingFeedbackModal = false;
 
     public function mount()
     {
@@ -273,6 +274,7 @@ class PatientCalendar extends Component
     public function closeSuccessModal()
     {
         $this->showSuccessModal = false;
+        $this->showBookingFeedbackModal = true;
     }
 
     public function render()

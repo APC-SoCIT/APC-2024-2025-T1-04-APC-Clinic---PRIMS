@@ -175,6 +175,22 @@
                 </div>
             </div>
         @endif
+
+        @if($showBookingFeedbackModal)
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
+                <div class="bg-white p-4 rounded-lg shadow-lg max-w-sm">
+                    <h3 class="text-xl font-semibold pb-3 text-black text-center">How satisfied are you with the booking process?</h3>
+                    <div class="flex justify-center gap-2">
+                        <button class="px-4 py-2 rounded-lg hover:bg-gray-200 active:bg-gray-300 focus:bg-red-200"><img src="{{ asset('img/sad.png') }}" class="w-12 h-12"></button>
+                        <button class="px-4 py-2 rounded-lg hover:bg-gray-200 active:bg-gray-300 focus:bg-gray-200"><img src="{{ asset('img/flat.png') }}" class="w-12 h-12"></button>
+                        <button class="px-4 py-2 rounded-lg hover:bg-gray-200 active:bg-gray-300 focus:bg-green-200"><img src="{{ asset('img/happy.png') }}" class="w-12 h-12"></button>
+                    </div>
+                    <div class="mt-4 flex justify-center">
+                        <x-prims-sub-button1 wire:click="submitBookingFeedback">Submit</x-prims-sub-button1>
+                    </div>
+                </div>
+            </div>
+        @endif
         
     </div>
 </div>
