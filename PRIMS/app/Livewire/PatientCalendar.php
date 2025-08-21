@@ -18,6 +18,7 @@ class PatientCalendar extends Component
     public $selectedDate;
     public $selectedTime;
     public $selectedDoctor;
+    public $selectedEmoji = null;
     public $month;
     public $year;
     public $daysInMonth = [];

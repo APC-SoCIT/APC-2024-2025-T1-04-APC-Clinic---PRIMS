@@ -181,11 +181,34 @@
                 <div class="bg-white p-4 rounded-lg shadow-lg max-w-sm">
                     <h3 class="text-xl font-semibold pb-3 text-black text-center">How satisfied are you with the booking process?</h3>
                     <div class="flex justify-center gap-2">
-                        <button class="px-4 py-2 rounded-lg hover:bg-gray-200 active:bg-gray-300 focus:bg-red-200"><img src="{{ asset('img/sad.png') }}" class="w-12 h-12"></button>
-                        <button class="px-4 py-2 rounded-lg hover:bg-gray-200 active:bg-gray-300 focus:bg-gray-200"><img src="{{ asset('img/flat.png') }}" class="w-12 h-12"></button>
-                        <button class="px-4 py-2 rounded-lg hover:bg-gray-200 active:bg-gray-300 focus:bg-green-200"><img src="{{ asset('img/happy.png') }}" class="w-12 h-12"></button>
+                        <button 
+                            wire:click="$set('selectedEmoji', 'sad')" 
+                            class="px-4 py-2 rounded-lg {{ $selectedEmoji === 'sad' ? 'bg-red-100' : 'hover:bg-gray-200 active:bg-gray-300' }}">
+                            <img src="{{ asset('img/sad.png') }}" class="w-12 h-12">
+                        </button>
+
+                        <button 
+                            wire:click="$set('selectedEmoji', 'flat')" 
+                            class="px-4 py-2 rounded-lg {{ $selectedEmoji === 'flat' ? 'bg-gray-100' : 'hover:bg-gray-200 active:bg-gray-300' }}">
+                            <img src="{{ asset('img/flat.png') }}" class="w-12 h-12">
+                        </button>
+
+                        <button 
+                            wire:click="$set('selectedEmoji', 'happy')" 
+                            class="px-4 py-2 rounded-lg {{ $selectedEmoji === 'happy' ? 'bg-green-100' : 'hover:bg-gray-200 active:bg-gray-300' }}">
+                            <img src="{{ asset('img/happy.png') }}" class="w-12 h-12">
+                        </button>
                     </div>
+                    @if($selectedEmoji)
+                        <div>
+                            <p class="text-sm text-gray-500 text-center mt-2">Add a quick comment to help us improve!</p>
+                            <textarea wire:model="bookingFeedback" id="bookingFeedback" placeholder="Your feedback..." class=" text-sm border border-gray-300 rounded-lg w-full p-2 mt-2"></textarea>
+                            <input id="anonymous" type="checkbox" name="anonymous" class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
+                            <label for="anonymous" class="text-sm text-gray-500">Keep me anonymous</label>
+                        </div>
+                    @endif
                     <div class="mt-4 flex justify-center">
+                        <x-prims-sub-button1 wire:click="cancelBookingFeedback">Submit</x-prims-sub-button1>
                         <x-prims-sub-button1 wire:click="submitBookingFeedback">Submit</x-prims-sub-button1>
                     </div>
                 </div>
