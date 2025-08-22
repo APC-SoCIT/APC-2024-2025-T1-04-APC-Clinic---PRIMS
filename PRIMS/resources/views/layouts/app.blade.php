@@ -25,6 +25,7 @@
 
             <!-- Page Content -->
             <main>
+                <x-toast />
                 {{ $slot }}
             </main>
         </div>
