@@ -1,25 +1,47 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Checkout') {
-            steps {
-                // Pull the latest code from GitHub
-                git branch: 'jenkins',
-                    url: 'https://github.com/your-org/PRIMS.git'
-            }
-        }
+    environment {
+        COMPOSE_FILE = 'docker-compose.yml'
+        WWWUSER = '1000'
+        WWWGROUP = '1000'
+        DB_CONNECTION = 'mysql'
+        DB_HOST = 'mysql'
+        DB_PORT = '3306'
+        DB_DATABASE = 'laravel'
+        DB_USERNAME = 'sail'
+        DB_PASSWORD = 'password'
+    }
 
-        stage('Set up Laravel Sail') {
+    stages {
+        stage('Install Dependencies') {
             steps {
                 dir('PRIMS') {
-                    sh 'cp .env.example .env || true'
-                    sh './vendor/bin/sail up -d'
+                    sh 'composer install --no-interaction --prefer-dist --optimize-autoloader'
                 }
             }
         }
 
-        stage('Run Tests') {
+        stage('Start Sail') {
+            steps {
+                dir('PRIMS') {
+                    sh './vendor/bin/sail up -d'
+
+                    // Wait until MySQL is ready
+                    sh '''
+                    echo "Waiting for MySQL to be ready..."
+                    until ./vendor/bin/sail exec mysql mysqladmin ping -h mysql -u sail -ppassword --silent; do
+                        echo "MySQL not ready yet..."
+                        sleep 5
+                    done
+                    echo "MySQL is ready!"
+                    '''
+                }
+            }
+        }
+
+
+        stage('Unit Test') {
             steps {
                 dir('PRIMS') {
                     sh './vendor/bin/sail exec laravel.test php artisan test'
@@ -27,27 +49,31 @@ pipeline {
             }
         }
 
+        stage('Integration Test') {
+            steps {
+                dir('PRIMS') {
+                    sh 'curl -f http://localhost || exit 1'
+                }
+            }
+        }
+
         stage('Create Docker Image') {
             steps {
                 dir('PRIMS') {
-                    sh 'docker build -t your-dockerhub-user/prims:latest .'
+                    sh 'docker build -t prims-app:latest .'
                 }
             }
         }
 
         stage('Commit Jenkinsfile') {
             steps {
-                dir('PRIMS') {
-                    script {
-                        sh '''
-                            git config user.email "jmmiyabe@student.apc.edu.ph"
-                            git config user.name "jmmiyabe"
-                            git add Jenkinsfile
-                            git commit -m "Add Jenkinsfile" || echo "No changes to commit"
-                            git push origin jenkins || echo "No changes to push"
-                        '''
-                    }
-                }
+                sh '''
+                git config user.email "jmmiyabe@student.apc.edu.ph"
+                git config user.name "jmmiyabe"
+                git add Jenkinsfile
+                git commit -m "Add Jenkinsfile" || true
+                git push origin HEAD:main
+                '''
             }
         }
     }
@@ -55,7 +81,7 @@ pipeline {
     post {
         always {
             dir('PRIMS') {
-                sh './vendor/bin/sail down'
+                sh './vendor/bin/sail down || true'
             }
         }
     }
