@@ -57,6 +57,7 @@ pipeline {
             steps {
                 dir('PRIMS') {
                     sh '''
+                    ./vendor/bin/sail ls -la
                     # Generate app key
                     ./vendor/bin/sail artisan key:generate
 
