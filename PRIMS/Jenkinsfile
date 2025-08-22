@@ -26,20 +26,10 @@ pipeline {
             steps {
                 dir('PRIMS') {
                     sh './vendor/bin/sail up -d'
-
-                    // Wait until MySQL is ready
-                    sh '''
-                    echo "Waiting for MySQL to be ready..."
-                    until ./vendor/bin/sail exec mysql mysqladmin ping -h mysql -u sail -ppassword --silent; do
-                        echo "MySQL not ready yet..."
-                        sleep 5
-                    done
-                    echo "MySQL is ready!"
-                    '''
+                    sh 'sleep 20' // give DB container time to be ready
                 }
             }
         }
-
 
         stage('Unit Test') {
             steps {
