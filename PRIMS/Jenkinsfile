@@ -81,7 +81,9 @@ pipeline {
 
         stage('Run Unit Tests') {
             steps {
-                sh './vendor/bin/sail artisan test --env=testing'
+                dir('PRIMS') {
+                    sh './vendor/bin/sail artisan test --env=testing'
+                }
             }
         }
 
