@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         APP_CONTAINER = "laravel_app"
-        MYSQL_CONTAINER = "mysql_db"
     }
 
     stages {
@@ -15,71 +14,54 @@ pipeline {
 
         stage('Build Containers') {
             steps {
-                script {
-                    sh 'docker-compose up -d --build'
-                }
+                sh 'docker-compose up -d --build'
             }
         }
 
         stage('Wait for Services') {
             steps {
-                script {
-                    echo "Waiting for MySQL to be ready..."
-                    sh '''
-                    until docker exec -T ${MYSQL_CONTAINER} mysqladmin ping -h "localhost" -uroot -proot --silent; do
-                        echo "Waiting..."
-                        sleep 2
-                    done
-                    echo "MySQL is up!"
-                    '''
-                }
+                echo 'Waiting for MySQL...'
+                sh '''
+                until docker exec ${APP_CONTAINER} php -r "new PDO('mysql:host=mysql;dbname=laravel_test', 'sail', 'password');"; do
+                    echo "Waiting for MySQL..."
+                    sleep 2
+                done
+                '''
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                script {
-                    sh "docker exec -T ${APP_CONTAINER} bash -c 'composer install --no-interaction --prefer-dist --optimize-autoloader'"
-                }
+                sh "docker exec ${APP_CONTAINER} apt update && apt install -y unzip git curl npm"
+                sh "docker exec ${APP_CONTAINER} curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer"
+                sh "docker exec ${APP_CONTAINER} composer install --no-interaction --prefer-dist --optimize-autoloader"
+                sh "docker exec ${APP_CONTAINER} npm install"
             }
         }
 
         stage('Prepare Database') {
             steps {
-                script {
-                    sh """
-                    docker exec -T ${APP_CONTAINER} bash -c '
-                        php artisan key:generate
-                        php artisan migrate:fresh --seed
-                    '
-                    """
-                }
+                sh "docker exec ${APP_CONTAINER} php artisan migrate --force"
             }
         }
 
-        stage('Run Tests') {
+        stage('Run Unit Tests') {
             steps {
-                script {
-                    sh "docker exec -T ${APP_CONTAINER} bash -c 'php artisan test'"
-                }
+                sh "docker exec ${APP_CONTAINER} php artisan test"
             }
         }
 
         stage('Build Frontend') {
             steps {
-                script {
-                    sh "docker exec -T ${APP_CONTAINER} bash -c 'npm install && npm run build'"
-                }
+                sh "docker exec ${APP_CONTAINER} npm run build"
             }
         }
     }
 
     post {
         always {
-            script {
-                echo "Shutting down containers..."
-                sh "docker-compose down"
-            }
+            echo 'Shutting down containers...'
+            sh 'docker-compose down'
         }
     }
 }

@@ -2,61 +2,66 @@ version: "3.9"
 
 services:
   laravel_app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: php:8.2-fpm
     container_name: laravel_app
-    ports:
-      - "8000:8000"  # Laravel app
-      - "5173:5173"  # Vite dev server
+    working_dir: /var/www/html
     volumes:
       - .:/var/www/html
-    working_dir: /var/www/html
+    ports:
+      - "8000:8000" # optional, for local testing
     depends_on:
-      - mysql_db
+      - mysql
       - redis
-    environment:
-      APP_ENV: local
-      APP_DEBUG: true
-      DB_HOST: mysql_db
-      DB_PORT: 3306
-      DB_DATABASE: ${DB_DATABASE}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
+      - meilisearch
+      - mailpit
+      - selenium
+    command: bash -c "while true; do sleep 1000; done"
 
-  mysql_db:
+  mysql:
     image: mysql:8.0
-    container_name: mysql_db
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: laravel_test
+      MYSQL_USER: sail
+      MYSQL_PASSWORD: password
     ports:
       - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-ppassword"]
       interval: 5s
       retries: 5
-      timeout: 5s
 
   redis:
     image: redis:alpine
     container_name: redis
     ports:
       - "6379:6379"
-    volumes:
-      - redis_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       retries: 5
-      timeout: 5s
 
-volumes:
-  mysql_data:
-    driver: local
-  redis_data:
-    driver: local
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    container_name: meilisearch
+    ports:
+      - "7700:7700"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://127.0.0.1:7700/health"]
+      interval: 5s
+      retries: 5
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  selenium:
+    image: selenium/standalone-chromium
+    container_name: selenium
+    ports:
+      - "4444:4444"
+      - "5900:5900"
