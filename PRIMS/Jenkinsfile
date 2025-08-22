@@ -2,111 +2,73 @@ pipeline {
     agent any
 
     environment {
-        COMPOSE_FILE = 'docker-compose.yml'
-        WWWUSER = '1000'
-        WWWGROUP = '1000'
-        DB_CONNECTION = 'mysql'
-        DB_HOST = 'mysql'
-        DB_PORT = '3306'
-        DB_DATABASE = 'prims_test'
-        DB_USERNAME = 'sail'
-        DB_PASSWORD = 'password'
-        APP_ENV = 'testing'
+        APP_CONTAINER = "laravel_app"
+        MYSQL_CONTAINER = "mysql_db"
     }
 
     stages {
+        stage('Checkout SCM') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Containers') {
+            steps {
+                script {
+                    sh 'docker-compose up -d --build'
+                }
+            }
+        }
+
+        stage('Wait for Services') {
+            steps {
+                script {
+                    echo "Waiting for MySQL to be ready..."
+                    sh '''
+                    until docker exec -T ${MYSQL_CONTAINER} mysqladmin ping -h "localhost" -uroot -proot --silent; do
+                        echo "Waiting..."
+                        sleep 2
+                    done
+                    echo "MySQL is up!"
+                    '''
+                }
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
-                dir('PRIMS') {
-                    sh '''
-                    docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/var/www/html -w /var/www/html laravelsail/php82-composer:latest composer require laravel/sail --dev
-                    docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/var/www/html -w /var/www/html laravelsail/php82-composer:latest composer install --no-interaction --prefer-dist --optimize-autoloader
-                    '''
+                script {
+                    sh "docker exec -T ${APP_CONTAINER} bash -c 'composer install --no-interaction --prefer-dist --optimize-autoloader'"
                 }
             }
         }
 
-        stage('Start Sail') {
+        stage('Prepare Database') {
             steps {
-                dir('PRIMS') {
-                    sh './vendor/bin/sail up -d'
+                script {
+                    sh """
+                    docker exec -T ${APP_CONTAINER} bash -c '
+                        php artisan key:generate
+                        php artisan migrate:fresh --seed
+                    '
+                    """
                 }
             }
         }
 
-        stage('Wait for Containers') {
+        stage('Run Tests') {
             steps {
-                dir('PRIMS') {
-                    sh '''
-                    echo "Waiting for laravel.test container..."
-                    until ./vendor/bin/sail ps | grep laravel.test | grep Up; do sleep 5; done
-
-                    echo "Waiting for MySQL..."
-                    until ./vendor/bin/sail exec mysql mysqladmin ping -h mysql -u sail -ppassword --silent; do sleep 5; done
-
-                    echo "All containers are ready!"
-                    '''
+                script {
+                    sh "docker exec -T ${APP_CONTAINER} bash -c 'php artisan test'"
                 }
             }
         }
 
-        stage('Prepare Test Database') {
+        stage('Build Frontend') {
             steps {
-                dir('PRIMS') {
-                    sh '''
-                    ./vendor/bin/sail artisan key:generate --env=testing
-                    ./vendor/bin/sail artisan migrate:fresh --seed --env=testing
-                    '''
-                }
-            }
-        }
-
-        stage('Build Frontend Assets') {
-            steps {
-                dir('PRIMS') {
-                    sh '''
-                    ./vendor/bin/sail npm install
-                    ./vendor/bin/sail npm audit fix
-                    ./vendor/bin/sail npm run build
-                    '''
-                }
-            }
-        }
-
-        stage('Run Unit Tests') {
-            steps {
-                dir('PRIMS') {
-                    sh './vendor/bin/sail artisan test --env=testing'
-                }
-            }
-        }
-
-        stage('Run Integration Tests') {
-            steps {
-                dir('PRIMS') {
-                    sh 'curl -f http://localhost || exit 1'
-                }
-            }
-        }
-
-        stage('Create Docker Image') {
-            steps {
-                dir('PRIMS') {
-                    sh 'docker build -t prims-app:latest .'
-                }
-            }
-        }
-
-        stage('Commit Jenkinsfile') {
-            steps {
-                dir('PRIMS') {
-                    sh '''
-                    git config user.email "jmmiyabe@student.apc.edu.ph"
-                    git config user.name "jmmiyabe"
-                    git add Jenkinsfile
-                    git commit -m "Add Jenkinsfile" || true
-                    git push origin HEAD:main
-                    '''
+                script {
+                    sh "docker exec -T ${APP_CONTAINER} bash -c 'npm install && npm run build'"
                 }
             }
         }
@@ -114,8 +76,9 @@ pipeline {
 
     post {
         always {
-            dir('PRIMS') {
-                sh './vendor/bin/sail down || true'
+            script {
+                echo "Shutting down containers..."
+                sh "docker-compose down"
             }
         }
     }
