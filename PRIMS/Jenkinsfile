@@ -5,8 +5,11 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the application...'
-                bat 'composer install'
-                bat 'npm install'
+                dir('PRIMS') {
+                    bat 'composer install'
+                    bat 'npm install'
+                    bat 'npm run build'
+                }
             }
         }
 
