@@ -14,30 +14,29 @@ pipeline {
         APP_ENV = 'testing'
     }
 
-    stage('Install Dependencies') {
-        steps {
-            dir('PRIMS') {
-                sh '''
-                # Install Sail if not present
-                docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/var/www/html -w /var/www/html laravelsail/php82-composer:latest composer require laravel/sail --dev
+    stages {   // <-- everything MUST go inside this
+        stage('Install Dependencies') {
+            steps {
+                dir('PRIMS') {
+                    sh '''
+                    # Install Sail if not present
+                    docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/var/www/html -w /var/www/html laravelsail/php82-composer:latest composer require laravel/sail --dev
 
-                # Install composer dependencies without Sail
-                docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/var/www/html -w /var/www/html laravelsail/php82-composer:latest composer install --no-interaction --prefer-dist --optimize-autoloader
-                '''
+                    # Install composer dependencies without Sail
+                    docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/var/www/html -w /var/www/html laravelsail/php82-composer:latest composer install --no-interaction --prefer-dist --optimize-autoloader
+                    '''
+                }
             }
         }
-    }
 
-    stage('Start Sail') {
-        steps {
-            dir('PRIMS') {
-                sh './vendor/bin/sail up -d'
+        stage('Start Sail') {
+            steps {
+                dir('PRIMS') {
+                    sh './vendor/bin/sail up -d'
+                }
             }
         }
-    }
 
-
-        // -----------------------------
         stage('Wait for Containers') {
             steps {
                 dir('PRIMS') {
@@ -54,7 +53,6 @@ pipeline {
             }
         }
 
-        // -----------------------------
         stage('Prepare Test Database') {
             steps {
                 dir('PRIMS') {
@@ -69,7 +67,6 @@ pipeline {
             }
         }
 
-        // -----------------------------
         stage('Build Frontend Assets') {
             steps {
                 dir('PRIMS') {
@@ -82,7 +79,6 @@ pipeline {
             }
         }
 
-        // -----------------------------
         stage('Run Unit Tests') {
             steps {
                 dir('PRIMS') {
@@ -91,7 +87,6 @@ pipeline {
             }
         }
 
-        // -----------------------------
         stage('Run Integration Tests') {
             steps {
                 dir('PRIMS') {
@@ -100,7 +95,6 @@ pipeline {
             }
         }
 
-        // -----------------------------
         stage('Create Docker Image') {
             steps {
                 dir('PRIMS') {
@@ -109,7 +103,6 @@ pipeline {
             }
         }
 
-        // -----------------------------
         stage('Commit Jenkinsfile') {
             steps {
                 sh '''
@@ -121,7 +114,7 @@ pipeline {
                 '''
             }
         }
-    }
+    } // end of stages
 
     post {
         always {
