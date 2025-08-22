@@ -1,0 +1,152 @@
+pipeline {
+  agent any
+
+  environment {
+    // Adjust if your compose file has a different name
+    COMPOSE_FILE = "docker-compose.yml"
+
+    // Standard Sail service for the PHP app
+    SERVICE_APP = "laravel.test"
+
+    // Sail’s Node service (used by Jetstream/Vite build)
+    SERVICE_NODE = "node"
+
+    // For tagging the built image artifact
+    APP_NAME = "prims"
+
+    // Make builds faster/more stable
+    DOCKER_BUILDKIT = "1"
+    COMPOSE_DOCKER_CLI_BUILD = "1"
+    CI = "true"
+  }
+
+  options {
+    timestamps()
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+        sh 'ls -la'
+      }
+    }
+
+    stage('Build') {
+      steps {
+        sh '''
+          set -euxo pipefail
+
+          # Prepare .env for containers
+          cp -n .env.example .env || true
+
+          # Build and start all needed services
+          docker compose -f "$COMPOSE_FILE" build
+          docker compose -f "$COMPOSE_FILE" up -d
+
+          # Install PHP deps inside the PHP container
+          docker compose -f "$COMPOSE_FILE" exec -T ${SERVICE_APP} \
+            composer install --no-interaction --prefer-dist --optimize-autoloader
+
+          # App key (safe in CI)
+          docker compose -f "$COMPOSE_FILE" exec -T ${SERVICE_APP} \
+            php artisan key:generate --force
+
+          # If your Sail stack includes the node service, build front-end
+          # (Jetstream/Vite). If not, this will be skipped safely.
+          if docker compose -f "$COMPOSE_FILE" ps | grep -q ${SERVICE_NODE}; then
+            docker compose -f "$COMPOSE_FILE" exec -T ${SERVICE_NODE} npm ci || \
+            docker compose -f "$COMPOSE_FILE" exec -T ${SERVICE_NODE} npm install
+            docker compose -f "$COMPOSE_FILE" exec -T ${SERVICE_NODE} npm run build
+          fi
+        '''
+      }
+    }
+
+    stage('Unit Test') {
+      steps {
+        sh '''
+          set -euxo pipefail
+
+          # Fresh DB + seed using Sail’s MySQL (from your .env example)
+          docker compose -f "$COMPOSE_FILE" exec -T ${SERVICE_APP} \
+            php artisan migrate:fresh --seed --force
+
+          # Run only the Unit test suite
+          docker compose -f "$COMPOSE_FILE" exec -T ${SERVICE_APP} \
+            php ./vendor/bin/phpunit --testsuite=Unit --testdox
+        '''
+      }
+    }
+
+    stage('Deploy To Test Env') {
+      steps {
+        sh '''
+          set -euxo pipefail
+
+          # Redeploy a clean test environment
+          docker compose -f "$COMPOSE_FILE" down -v || true
+          docker compose -f "$COMPOSE_FILE" up -d
+
+          # Run migrations for the "test" environment
+          docker compose -f "$COMPOSE_FILE" exec -T ${SERVICE_APP} \
+            php artisan migrate --force
+        '''
+      }
+    }
+
+    stage('Integration Test') {
+      steps {
+        sh '''
+          set -euxo pipefail
+
+          # Option A: Laravel Feature (integration) tests
+          docker compose -f "$COMPOSE_FILE" exec -T ${SERVICE_APP} \
+            php ./vendor/bin/phpunit --testsuite=Feature --testdox
+
+          # Option B (quick smoke): try hitting the app from inside the PHP container.
+          # We avoid curl install by just asking PHP to fetch the homepage.
+          docker compose -f "$COMPOSE_FILE" exec -T ${SERVICE_APP} \
+            php -r "echo file_get_contents('http://localhost/') !== false ? 'HTTP OK\\n' : exit(1);"
+        '''
+      }
+    }
+
+    stage('Create Docker Image') {
+      steps {
+        sh '''
+          set -euxo pipefail
+
+          # With Sail there’s no custom Dockerfile in your repo; we build the service image via Compose.
+          docker compose -f "$COMPOSE_FILE" build ${SERVICE_APP}
+
+          # Get the built image ID of the laravel.test service
+          IMAGE_ID=$(docker compose -f "$COMPOSE_FILE" images ${SERVICE_APP} --quiet | tail -n 1)
+
+          # Tag it as a pipeline artifact
+          docker tag "${IMAGE_ID}" "${APP_NAME}:build-${BUILD_NUMBER}"
+          docker tag "${IMAGE_ID}" "${APP_NAME}:latest"
+
+          echo "Tagged image:"
+          docker images | grep "${APP_NAME}"
+        '''
+      }
+    }
+  }
+
+  post {
+    always {
+      // Helpful logs if something breaks
+      sh '''
+        set +e
+        docker compose -f "$COMPOSE_FILE" ps
+        docker compose -f "$COMPOSE_FILE" logs --no-color ${SERVICE_APP} | tail -n 200
+      '''
+    }
+    cleanup {
+      sh 'docker compose -f "$COMPOSE_FILE" down -v || true'
+      cleanWs()
+    }
+  }
+}
