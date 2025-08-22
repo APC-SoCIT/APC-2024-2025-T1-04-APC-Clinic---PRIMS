@@ -32,8 +32,6 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh "docker exec ${APP_CONTAINER} apt update && apt install -y unzip git curl npm"
-                sh "docker exec ${APP_CONTAINER} curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer"
                 sh "docker exec ${APP_CONTAINER} composer install --no-interaction --prefer-dist --optimize-autoloader"
                 sh "docker exec ${APP_CONTAINER} npm install"
             }

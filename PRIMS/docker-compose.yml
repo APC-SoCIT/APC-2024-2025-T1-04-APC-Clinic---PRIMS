@@ -2,20 +2,21 @@ version: "3.9"
 
 services:
   laravel_app:
-    image: php:8.2-fpm
+    build:
+      context: ./docker/laravel_app
+      dockerfile: Dockerfile
     container_name: laravel_app
     working_dir: /var/www/html
     volumes:
       - .:/var/www/html
     ports:
-      - "8000:8000" # optional, for local testing
+      - "8000:9000"
     depends_on:
       - mysql
       - redis
       - meilisearch
       - mailpit
       - selenium
-    command: bash -c "while true; do sleep 1000; done"
 
   mysql:
     image: mysql:8.0
