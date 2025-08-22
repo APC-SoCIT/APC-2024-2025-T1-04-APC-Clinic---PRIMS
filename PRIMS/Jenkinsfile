@@ -34,7 +34,7 @@ pipeline {
         stage('Unit Test') {
             steps {
                 dir('PRIMS') {
-                    sh './vendor/bin/sail exec -w /var/www/html laravel.test php artisan test'
+                    sh './vendor/bin/sail exec -w /var/www/html laravel.test artisan test'
                 }
             }
         }
