@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building the application...'
+                sh 'composer install'   
+                sh 'npm install'
+                echo 'Stage: Build'        
+            }
+        }
+
+        stage('Unit Test') {
+            steps {
+                echo 'Running unit tests...'
+                sh './vendor/bin/phpunit --coverage-text'
+                echo 'Stage: Unit Test'
+            }
+        }
+
+        stage('Deploy To Test Env') {
+            steps {
+                echo 'Deploying to test environment...'
+                sh 'scp -r . user@test-server:/var/www/test-app'
+                echo 'Stage: Deploy to Test Env'
+            }
+        }
+
+        stage('Integration Test') {
+            steps {
+                echo 'Running integration tests...'
+                sh 'php artisan test --testsuite=Feature'
+                echo 'Stage: Integration Test'
+            }
+        }
+
+        stage('Create Docker Image') {
+            steps {
+                echo 'Building Docker image...'
+                sh 'docker build -t prims-app:latest .'
+                echo 'Stage: Create docker image'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline completed.'
+        }
+    }
+}
