@@ -14,15 +14,12 @@ pipeline {
         APP_ENV = 'testing'
     }
 
-    stages {   // <-- everything MUST go inside this
+    stages {
         stage('Install Dependencies') {
             steps {
                 dir('PRIMS') {
                     sh '''
-                    # Install Sail if not present
                     docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/var/www/html -w /var/www/html laravelsail/php82-composer:latest composer require laravel/sail --dev
-
-                    # Install composer dependencies without Sail
                     docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/var/www/html -w /var/www/html laravelsail/php82-composer:latest composer install --no-interaction --prefer-dist --optimize-autoloader
                     '''
                 }
@@ -57,11 +54,7 @@ pipeline {
             steps {
                 dir('PRIMS') {
                     sh '''
-                    ./vendor/bin/sail exec laravel.test ls -la /var/www/html/artisan
-                    # Generate app key
-                    ./vendor/bin/sail artisan key:generate
-
-                    # Refresh test database and seed
+                    ./vendor/bin/sail artisan key:generate --env=testing
                     ./vendor/bin/sail artisan migrate:fresh --seed --env=testing
                     '''
                 }
@@ -106,16 +99,18 @@ pipeline {
 
         stage('Commit Jenkinsfile') {
             steps {
-                sh '''
-                git config user.email "jmmiyabe@student.apc.edu.ph"
-                git config user.name "jmmiyabe"
-                git add Jenkinsfile
-                git commit -m "Add Jenkinsfile" || true
-                git push origin HEAD:main
-                '''
+                dir('PRIMS') {
+                    sh '''
+                    git config user.email "jmmiyabe@student.apc.edu.ph"
+                    git config user.name "jmmiyabe"
+                    git add Jenkinsfile
+                    git commit -m "Add Jenkinsfile" || true
+                    git push origin HEAD:main
+                    '''
+                }
             }
         }
-    } // end of stages
+    }
 
     post {
         always {
