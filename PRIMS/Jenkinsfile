@@ -5,36 +5,37 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the application...'
-                sh 'composer install'   
-                sh 'npm install' 
+                bat 'composer install'
+                bat 'npm install'
             }
         }
 
         stage('Unit Test') {
             steps {
                 echo 'Running unit tests...'
-                sh './vendor/bin/phpunit --coverage-text'
+                bat 'vendor\\bin\\phpunit --coverage-text'
             }
         }
 
         stage('Deploy To Test Env') {
             steps {
                 echo 'Deploying to test environment...'
-                sh 'scp -r . user@test-server:/var/www/test-app'
+                // If you have scp in PATH (via Git Bash or PuTTY tools), you can still call it:
+                bat 'scp -r . user@test-server:/var/www/test-app'
             }
         }
 
         stage('Integration Test') {
             steps {
                 echo 'Running integration tests...'
-                sh 'php artisan test --testsuite=Feature'
+                bat 'php artisan test --testsuite=Feature'
             }
         }
 
         stage('Create Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                sh 'docker build -t prims-app:latest .'
+                bat 'docker build -t prims-app:latest .'
             }
         }
     }
