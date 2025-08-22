@@ -58,10 +58,10 @@ pipeline {
         stage('Commit Jenkinsfile') {
             steps {
                 sh '''
-                git config user.email "jenkins@ci.local"
-                git config user.name "Jenkins CI"
+                git config user.email "jmmiyabe@student.apc.edu.ph"
+                git config user.name "jmmiyabe"
                 git add Jenkinsfile
-                git commit -m "Add Jenkinsfile [ci skip]" || true
+                git commit -m "Add Jenkinsfile" || true
                 git push origin HEAD:main
                 '''
             }
