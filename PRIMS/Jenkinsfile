@@ -26,7 +26,27 @@ pipeline {
             steps {
                 dir('PRIMS') {
                     sh './vendor/bin/sail up -d'
-                    sh 'sleep 20' // give DB container time to be ready
+                }
+            }
+        }
+
+        stage('Wait for Containers') {
+            steps {
+                dir('PRIMS') {
+                    sh '''
+                    # Wait for laravel.test container to be up
+                    echo "Waiting for laravel.test container..."
+                    until ./vendor/bin/sail ps | grep laravel.test | grep Up; do
+                        sleep 5
+                    done
+
+                    # Wait for MySQL to be ready
+                    echo "Waiting for MySQL to be ready..."
+                    until ./vendor/bin/sail exec mysql mysqladmin ping -h mysql -u sail -ppassword --silent; do
+                        sleep 5
+                    done
+                    echo "All containers are ready!"
+                    '''
                 }
             }
         }
@@ -34,11 +54,10 @@ pipeline {
         stage('Unit Test') {
             steps {
                 dir('PRIMS') {
-                    sh './vendor/bin/sail exec laravel.test php /var/www/html/artisan test'
+                    sh './vendor/bin/sail exec laravel.test php artisan test'
                 }
             }
         }
-
 
         stage('Integration Test') {
             steps {
