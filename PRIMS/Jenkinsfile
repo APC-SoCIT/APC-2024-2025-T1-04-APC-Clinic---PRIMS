@@ -7,6 +7,7 @@ pipeline {
                 sh '''#!/bin/bash
                 set -euxo pipefail
                 cd PRIMS
+                composer install
                 ./vendor/bin/sail build
                 '''
             }
