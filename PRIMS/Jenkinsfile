@@ -16,14 +16,15 @@ pipeline {
         stage('Unit Test') {
             steps {
                 echo 'Running unit tests...'
-                bat 'vendor\\bin\\phpunit --coverage-text'
+                dir('PRIMS') {
+                    bat 'vendor\\bin\\phpunit.bat --coverage-text'
+                }
             }
         }
 
         stage('Deploy To Test Env') {
             steps {
                 echo 'Deploying to test environment...'
-                // If you have scp in PATH (via Git Bash or PuTTY tools), you can still call it:
                 bat 'scp -r . user@test-server:/var/www/test-app'
             }
         }
@@ -31,14 +32,18 @@ pipeline {
         stage('Integration Test') {
             steps {
                 echo 'Running integration tests...'
-                bat 'php artisan test --testsuite=Feature'
+                dir('PRIMS') {
+                    bat 'php artisan test --testsuite=Feature'
+                }
             }
         }
 
         stage('Create Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                bat 'docker build -t prims-app:latest .'
+                dir('PRIMS') {
+                    bat 'docker build -t prims-app:latest .'
+                }
             }
         }
     }
