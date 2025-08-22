@@ -15,15 +15,23 @@ pipeline {
     }
 
     stages {
-        stage('Install Dependencies') {
+        // -----------------------------
+        stage('Install Sail & Dependencies') {
             steps {
                 dir('PRIMS') {
-                    sh 'composer install --no-interaction --prefer-dist --optimize-autoloader'
+                    sh '''
+                    # Install Sail if not present
+                    docker run --rm -u "$(id -u):$(id -g)" -v $(pwd):/var/www/html -w /var/www/html laravelsail/php82-composer:latest composer require laravel/sail --dev
+
+                    # Install PHP dependencies
+                    ./vendor/bin/sail composer install --no-interaction --prefer-dist --optimize-autoloader
+                    '''
                 }
             }
         }
 
-        stage('Start Sail') {
+        // -----------------------------
+        stage('Start Sail Containers') {
             steps {
                 dir('PRIMS') {
                     sh './vendor/bin/sail up -d'
@@ -31,39 +39,53 @@ pipeline {
             }
         }
 
+        // -----------------------------
         stage('Wait for Containers') {
             steps {
                 dir('PRIMS') {
                     sh '''
-                    # Wait for laravel.test container to be up
                     echo "Waiting for laravel.test container..."
-                    until ./vendor/bin/sail ps | grep laravel.test | grep Up; do
-                        sleep 5
-                    done
+                    until ./vendor/bin/sail ps | grep laravel.test | grep Up; do sleep 5; done
 
-                    # Wait for MySQL to be ready
-                    echo "Waiting for MySQL to be ready..."
-                    until ./vendor/bin/sail exec mysql mysqladmin ping -h mysql -u sail -ppassword --silent; do
-                        sleep 5
-                    done
+                    echo "Waiting for MySQL..."
+                    until ./vendor/bin/sail exec mysql mysqladmin ping -h mysql -u sail -ppassword --silent; do sleep 5; done
+
                     echo "All containers are ready!"
                     '''
                 }
             }
         }
 
+        // -----------------------------
         stage('Prepare Test Database') {
             steps {
                 dir('PRIMS') {
                     sh '''
-                    echo "Refreshing test database..."
+                    # Generate app key
+                    ./vendor/bin/sail artisan key:generate
+
+                    # Refresh test database and seed
                     ./vendor/bin/sail artisan migrate:fresh --seed --env=testing
                     '''
                 }
             }
         }
 
-        stage('Unit Test') {
+        // -----------------------------
+        stage('Build Frontend Assets') {
+            steps {
+                dir('PRIMS') {
+                    sh '''
+                    ./vendor/bin/sail npm install
+                    ./vendor/bin/sail npm audit fix
+                    ./vendor/bin/sail npm run build
+                    '''
+                }
+            }
+        }
+
+        // -----------------------------
+        stage('Run Unit Tests') {
             steps {
                 dir('PRIMS') {
                     sh './vendor/bin/sail artisan test --env=testing'
@@ -71,7 +93,8 @@ pipeline {
             }
         }
 
-        stage('Integration Test') {
+        // -----------------------------
+        stage('Run Integration Tests') {
             steps {
                 dir('PRIMS') {
                     sh 'curl -f http://localhost || exit 1'
@@ -79,6 +102,7 @@ pipeline {
             }
         }
 
+        // -----------------------------
         stage('Create Docker Image') {
             steps {
                 dir('PRIMS') {
@@ -87,6 +111,7 @@ pipeline {
             }
         }
 
+        // -----------------------------
         stage('Commit Jenkinsfile') {
             steps {
                 sh '''
