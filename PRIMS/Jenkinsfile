@@ -57,7 +57,7 @@ pipeline {
             steps {
                 dir('PRIMS') {
                     sh '''
-                    ./vendor/bin/sail exec laravel.test ls -la
+                    ./vendor/bin/sail exec laravel.test ls -la /var/www/html/artisan
                     # Generate app key
                     ./vendor/bin/sail artisan key:generate
 
