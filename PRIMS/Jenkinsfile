@@ -6,8 +6,7 @@ pipeline {
             steps {
                 echo 'Building the application...'
                 sh 'composer install'   
-                sh 'npm install'
-                echo 'Stage: Build'        
+                sh 'npm install' 
             }
         }
 
@@ -15,7 +14,6 @@ pipeline {
             steps {
                 echo 'Running unit tests...'
                 sh './vendor/bin/phpunit --coverage-text'
-                echo 'Stage: Unit Test'
             }
         }
 
@@ -23,7 +21,6 @@ pipeline {
             steps {
                 echo 'Deploying to test environment...'
                 sh 'scp -r . user@test-server:/var/www/test-app'
-                echo 'Stage: Deploy to Test Env'
             }
         }
 
@@ -31,7 +28,6 @@ pipeline {
             steps {
                 echo 'Running integration tests...'
                 sh 'php artisan test --testsuite=Feature'
-                echo 'Stage: Integration Test'
             }
         }
 
@@ -39,7 +35,6 @@ pipeline {
             steps {
                 echo 'Building Docker image...'
                 sh 'docker build -t prims-app:latest .'
-                echo 'Stage: Create docker image'
             }
         }
     }
