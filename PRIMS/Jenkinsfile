@@ -8,9 +8,10 @@ pipeline {
         DB_CONNECTION = 'mysql'
         DB_HOST = 'mysql'
         DB_PORT = '3306'
-        DB_DATABASE = 'laravel'
+        DB_DATABASE = 'prims_test'
         DB_USERNAME = 'sail'
         DB_PASSWORD = 'password'
+        APP_ENV = 'testing'
     }
 
     stages {
@@ -51,10 +52,21 @@ pipeline {
             }
         }
 
+        stage('Prepare Test Database') {
+            steps {
+                dir('PRIMS') {
+                    sh '''
+                    echo "Refreshing test database..."
+                    ./vendor/bin/sail artisan migrate:fresh --seed --env=testing
+                    '''
+                }
+            }
+        }
+
         stage('Unit Test') {
             steps {
                 dir('PRIMS') {
-                    sh './vendor/bin/sail artisan test'
+                    sh './vendor/bin/sail artisan test --env=testing'
                 }
             }
         }
