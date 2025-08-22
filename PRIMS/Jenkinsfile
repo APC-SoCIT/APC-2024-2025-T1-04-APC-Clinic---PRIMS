@@ -1,54 +1,68 @@
 pipeline {
     agent any
 
+    environment {
+        COMPOSE_FILE = 'docker-compose.yml'
+        WWWUSER = '1000'
+        WWWGROUP = '1000'
+        DB_CONNECTION = 'mysql'
+        DB_HOST = 'mysql'
+        DB_PORT = '3306'
+        DB_DATABASE = 'laravel'
+        DB_USERNAME = 'sail'
+        DB_PASSWORD = 'password'
+    }
+
     stages {
-        stage('Build') {
+        stage('Install Dependencies') {
             steps {
-                sh '''#!/bin/bash
-                set -euxo pipefail
-                cd PRIMS
-                composer install
-                ./vendor/bin/sail build
-                '''
+                dir('PRIMS') {
+                    sh 'composer install --no-interaction --prefer-dist --optimize-autoloader'
+                }
+            }
+        }
+
+        stage('Start Sail') {
+            steps {
+                dir('PRIMS') {
+                    sh './vendor/bin/sail up -d'
+                    sh 'sleep 20' // give DB container time to be ready
+                }
             }
         }
 
         stage('Unit Test') {
             steps {
-                sh '''#!/bin/bash
-                set -euxo pipefail
-                cd PRIMS
-                ./vendor/bin/sail artisan test
-                '''
-            }
-        }
-
-        stage('Deploy To Test Env') {
-            steps {
-                sh '''#!/bin/bash
-                set -euxo pipefail
-                cd PRIMS
-                docker compose up -d
-                '''
+                dir('PRIMS') {
+                    sh './vendor/bin/sail artisan test'
+                }
             }
         }
 
         stage('Integration Test') {
             steps {
-                sh '''#!/bin/bash
-                set -euxo pipefail
-                cd PRIMS
-                ./vendor/bin/sail artisan test --testsuite=Feature
-                '''
+                dir('PRIMS') {
+                    sh 'curl -f http://localhost || exit 1'
+                }
             }
         }
 
         stage('Create Docker Image') {
             steps {
-                sh '''#!/bin/bash
-                set -euxo pipefail
-                cd PRIMS
-                docker build -t prims-app .
+                dir('PRIMS') {
+                    sh 'docker build -t prims-app:latest .'
+                }
+            }
+        }
+
+        stage('Commit Jenkinsfile') {
+            steps {
+                sh '''
+                git config user.email "jenkins@ci.local"
+                git config user.name "Jenkins CI"
+                git add Jenkinsfile
+                git commit -m "Add Jenkinsfile [ci skip]" || true
+                git push origin HEAD:main
                 '''
             }
         }
@@ -56,13 +70,9 @@ pipeline {
 
     post {
         always {
-            sh '''#!/bin/bash
-            set +e
-            cd PRIMS
-            docker compose ps || true
-            docker compose logs --no-color laravel.test | tail -n 200 || true
-            docker compose down -v || true
-            '''
+            dir('PRIMS') {
+                sh './vendor/bin/sail down || true'
+            }
         }
     }
 }
