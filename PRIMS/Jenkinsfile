@@ -15,8 +15,8 @@ pipeline {
 
         stage('Unit Test') {
             steps {
-                echo 'Running unit tests...'
                 dir('PRIMS') {
+                    bat 'php artisan migrate --env=testing'
                     bat 'vendor\\bin\\phpunit.bat --coverage-text'
                 }
             }
