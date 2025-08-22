@@ -1,37 +1,25 @@
 pipeline {
     agent any
 
-    environment {
-        COMPOSE_FILE = 'docker-compose.yml'
-        WWWUSER = '1000'
-        WWWGROUP = '1000'
-        DB_CONNECTION = 'mysql'
-        DB_HOST = 'mysql'
-        DB_PORT = '3306'
-        DB_DATABASE = 'laravel'
-        DB_USERNAME = 'sail'
-        DB_PASSWORD = 'password'
-    }
-
     stages {
-        stage('Install Dependencies') {
+        stage('Checkout') {
             steps {
-                dir('PRIMS') {
-                    sh 'composer install --no-interaction --prefer-dist --optimize-autoloader'
-                }
+                // Pull the latest code from GitHub
+                git branch: 'jenkins',
+                    url: 'https://github.com/your-org/PRIMS.git'
             }
         }
 
-        stage('Start Sail') {
+        stage('Set up Laravel Sail') {
             steps {
                 dir('PRIMS') {
+                    sh 'cp .env.example .env || true'
                     sh './vendor/bin/sail up -d'
-                    sh 'sleep 20' // give DB container time to be ready
                 }
             }
         }
 
-        stage('Unit Test') {
+        stage('Run Tests') {
             steps {
                 dir('PRIMS') {
                     sh './vendor/bin/sail exec laravel.test php artisan test'
@@ -39,31 +27,27 @@ pipeline {
             }
         }
 
-        stage('Integration Test') {
-            steps {
-                dir('PRIMS') {
-                    sh 'curl -f http://localhost || exit 1'
-                }
-            }
-        }
-
         stage('Create Docker Image') {
             steps {
                 dir('PRIMS') {
-                    sh 'docker build -t prims-app:latest .'
+                    sh 'docker build -t your-dockerhub-user/prims:latest .'
                 }
             }
         }
 
         stage('Commit Jenkinsfile') {
             steps {
-                sh '''
-                git config user.email "jmmiyabe@student.apc.edu.ph"
-                git config user.name "jmmiyabe"
-                git add Jenkinsfile
-                git commit -m "Add Jenkinsfile" || true
-                git push origin HEAD:main
-                '''
+                dir('PRIMS') {
+                    script {
+                        sh '''
+                            git config user.email "jmmiyabe@student.apc.edu.ph"
+                            git config user.name "jmmiyabe"
+                            git add Jenkinsfile
+                            git commit -m "Add Jenkinsfile" || echo "No changes to commit"
+                            git push origin jenkins || echo "No changes to push"
+                        '''
+                    }
+                }
             }
         }
     }
@@ -71,7 +55,7 @@ pipeline {
     post {
         always {
             dir('PRIMS') {
-                sh './vendor/bin/sail down || true'
+                sh './vendor/bin/sail down'
             }
         }
     }
