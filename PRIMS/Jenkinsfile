@@ -26,27 +26,54 @@ pipeline {
             }
         }
 
+        stage('Prepare Env') {
+            steps {
+                sh '''
+                    cp .env.testing .env
+                    chmod -R 777 storage bootstrap/cache .env
+                '''
+            }
+        }
+
+        stage('Generate Key') {
+            steps {
+                sh '''
+                    if ! grep -q "APP_KEY=" .env || [ -z "$(grep 'APP_KEY=' .env | cut -d '=' -f2)" ]; then
+                        key=$(./vendor/bin/sail artisan key:generate --show)
+                        sed -i "s|^APP_KEY=.*|APP_KEY=$key|" .env
+                    fi
+                '''
+            }
+        }
+
+        stage('Setup App') {
+            steps {
+                sh '''
+                    ./vendor/bin/sail artisan key:generate
+                    ./vendor/bin/sail artisan migrate:fresh --seed --env=testing
+                    ./vendor/bin/sail root-shell -c "chown -R sail:sail /var/www/html"
+                    ./vendor/bin/sail npm install
+                    ./vendor/bin/sail npm audit fix || true
+                    ./vendor/bin/sail npm run build
+                '''
+            }
+        }
+
         stage('Unit Test') {
             steps {
-                dir('PRIMS') {
-                    sh './vendor/bin/sail exec laravel.test php artisan test'
-                }
+                sh './vendor/bin/sail artisan test'
             }
         }
 
         stage('Integration Test') {
             steps {
-                dir('PRIMS') {
-                    sh 'curl -f http://localhost || exit 1'
-                }
+                sh 'curl -f http://localhost || exit 1'
             }
         }
 
         stage('Create Docker Image') {
             steps {
-                dir('PRIMS') {
-                    sh 'docker build -t prims-app:latest .'
-                }
+                sh 'docker build -t prims-app:latest .'
             }
         }
 
@@ -65,9 +92,7 @@ pipeline {
 
     post {
         always {
-            dir('PRIMS') {
-                sh './vendor/bin/sail down || true'
-            }
+            sh './vendor/bin/sail down || true'
         }
     }
 }
