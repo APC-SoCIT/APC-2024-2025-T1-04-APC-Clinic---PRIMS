@@ -10,7 +10,7 @@ pipeline {
             steps {
                 git branch: 'jenkins/122_SC_CICD_try', 
                     url: 'https://github.com/APC-SoCIT/APC-2024-2025-T1-04-APC-Clinic---PRIMS.git',
-                    credentialsId: '68532f6d-efe3-458d-98a0-cff5d7cb1218
+                    credentialsId: '68532f6d-efe3-458d-98a0-cff5d7cb1218'
             }
         }
 
