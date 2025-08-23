@@ -2,58 +2,87 @@ pipeline {
     agent any
 
     environment {
-        // optional: define versions or credentials here
         DOCKER_IMAGE = "wonderpets-prims:${env.BUILD_NUMBER}"
     }
 
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                echo "Installing PHP & Node dependencies..."
-                sh '''
-                    ./vendor/bin/sail composer install --no-interaction --prefer-dist
-                    ./vendor/bin/sail npm ci
-                    ./vendor/bin/sail npm run build
-                '''
+                checkout scm
             }
         }
 
-        stage('Unit Test') {
+        stage('Install Sail') {
             steps {
-                echo "Running Unit Tests..."
-                sh './vendor/bin/sail artisan test --testsuite=Unit'
+                dir('PRIMS') {
+                    echo "Installing Laravel Sail..."
+                    sh 'composer require laravel/sail --dev'
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('PRIMS') {
+                    echo "Installing PHP & Node dependencies..."
+                    sh './vendor/bin/sail composer install --no-interaction --prefer-dist'
+                    sh './vendor/bin/sail npm install'
+                    sh './vendor/bin/sail npm audit fix'
+                    sh './vendor/bin/sail npm run build'
+                }
+            }
+        }
+
+        stage('Run Unit Tests') {
+            steps {
+                dir('PRIMS') {
+                    sh './vendor/bin/sail artisan test --env=testing'
+                }
             }
         }
 
         stage('Deploy to Test Env') {
             steps {
-                echo "Starting Sail environment..."
-                sh '''
-                    ./vendor/bin/sail up -d
-                    ./vendor/bin/sail artisan migrate:fresh --seed
-                '''
+                dir('PRIMS') {
+                    sh './vendor/bin/sail up -d'
+                }
             }
         }
 
         stage('Integration Test') {
             steps {
-                echo "Running Integration Tests..."
-                sh './vendor/bin/sail artisan test --testsuite=Feature'
+                dir('PRIMS') {
+                    sh 'curl -f http://localhost || exit 1'
+                }
             }
         }
 
         stage('Create Docker Image') {
             steps {
-                echo "Building Docker Image..."
-                sh "docker build -t $DOCKER_IMAGE ."
+                dir('PRIMS') {
+                    sh "docker build -t ${DOCKER_IMAGE} ."
+                }
+            }
+        }
+
+        stage('Commit Jenkinsfile') {
+            steps {
+                sh '''
+                git config user.email "jmmiyabe@student.apc.edu.ph"
+                git config user.name "jmmiyabe"
+                git add Jenkinsfile
+                git commit -m "Add Jenkinsfile" || true
+                git push origin HEAD:main
+                '''
             }
         }
     }
 
     post {
         always {
-            echo "Cleaning up Sail containers..."
-            sh './vendor/bin/sail down || true'
+            dir('PRIMS') {
+                sh './vendor/bin/sail down || true'
+            }
         }
     }
 }
