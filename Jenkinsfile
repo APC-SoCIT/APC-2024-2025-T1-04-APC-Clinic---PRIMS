@@ -16,17 +16,13 @@ pipeline {
     stages {
         stage('Install Dependencies') {
             steps {
-                dir('PRIMS') {
-                    sh 'composer install --no-interaction --prefer-dist --optimize-autoloader'
-                }
+                sh 'composer install --no-interaction --prefer-dist --optimize-autoloader'
             }
         }
 
         stage('Start Sail') {
             steps {
-                dir('PRIMS') {
-                    sh './vendor/bin/sail up -d'
-                }
+                sh './vendor/bin/sail up -d'
             }
         }
 
