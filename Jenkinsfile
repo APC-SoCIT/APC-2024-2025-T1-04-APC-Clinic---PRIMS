@@ -14,6 +14,7 @@ pipeline {
         APP_ENV = 'testing'
     }
 
+    stages {
         stage('Install Dependencies') {
             steps {
                 dir('PRIMS') {
@@ -112,7 +113,7 @@ pipeline {
                 }
             }
         }
-    }
+    } // end of stages
 
     post {
         always {
