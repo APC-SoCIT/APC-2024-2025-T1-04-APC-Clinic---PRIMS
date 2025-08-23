@@ -1,43 +1,18 @@
 pipeline {
-    agent {
-        docker {
-            image 'php-node-composer'  // the image we built
-            args '-u root:root'        // optional: run as root
-        }
-    }
-
-    environment {
-        DB_CONNECTION = 'mysql'
-        DB_HOST = 'mysql_host'
-        DB_PORT = '3306'
-        DB_DATABASE = 'laravel_db'
-        DB_USERNAME = 'root'
-        DB_PASSWORD = 'password'
-    }
+    agent any
 
     stages {
-        stage('Checkout') {
+        stage('Build') {
             steps {
-                git 'https://github.com/your-org/your-laravel-project.git'
-            }
-        }
-
-        stage('Install PHP dependencies') {
-            steps {
+                git 'https://github.com/APC-SoCIT/APC-2024-2025-T1-04-APC-Clinic---PRIMS.git'
                 sh 'composer install'
+                sh 'cp .env.example .env'
+                sh 'php artisan key:generate'
             }
         }
-
-        stage('Install Node dependencies') {
+        stage('Test') {
             steps {
-                sh 'npm install'
-                sh 'npm run build'  // or 'yarn build'
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                sh 'php artisan test'
+                sh './vendor/bin/phpunit'
             }
         }
     }
