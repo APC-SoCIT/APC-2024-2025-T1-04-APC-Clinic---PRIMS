@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // optional: define versions or credentials here
-        DOCKER_IMAGE = "yourorg/yourapp:${env.BUILD_NUMBER}"
+        DOCKER_IMAGE = "wonderpets-prims:${env.BUILD_NUMBER}"
     }
 
     stages {
