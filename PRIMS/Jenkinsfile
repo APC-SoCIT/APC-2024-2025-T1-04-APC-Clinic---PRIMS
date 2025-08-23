@@ -1,56 +1,58 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_IMAGE = "wonderpets-prims:${env.BUILD_NUMBER}"
+    }
+
     stages {
         stage('Build') {
             steps {
-                echo 'Building the application...'
-                dir('PRIMS') {
-                    bat 'composer install'
-                    bat 'npm install'
-                    bat 'npm run build'
-                }
+                echo "Installing PHP & Node dependencies..."
+                sh '''
+                    ./vendor/bin/sail composer install --no-interaction --prefer-dist
+                    ./vendor/bin/sail npm ci
+                    ./vendor/bin/sail npm run build
+                '''
             }
         }
 
         stage('Unit Test') {
             steps {
-                dir('PRIMS') {
-                    bat 'php artisan migrate --env=testing'
-                    bat 'vendor\\bin\\phpunit.bat --coverage-text'
-                }
+                echo "Running Unit Tests..."
+                sh './vendor/bin/sail artisan test --testsuite=Unit'
             }
         }
 
-        stage('Deploy To Test Env') {
+        stage('Deploy to Test Env') {
             steps {
-                echo 'Deploying to test environment...'
-                bat 'scp -r . user@test-server:/var/www/test-app'
+                echo "Starting Sail environment..."
+                sh '''
+                    ./vendor/bin/sail up -d
+                    ./vendor/bin/sail artisan migrate:fresh --seed
+                '''
             }
         }
 
         stage('Integration Test') {
             steps {
-                echo 'Running integration tests...'
-                dir('PRIMS') {
-                    bat 'php artisan test --testsuite=Feature'
-                }
+                echo "Running Integration Tests..."
+                sh './vendor/bin/sail artisan test --testsuite=Feature'
             }
         }
 
         stage('Create Docker Image') {
             steps {
-                echo 'Building Docker image...'
-                dir('PRIMS') {
-                    bat 'docker build -t prims-app:latest .'
-                }
+                echo "Building Docker Image..."
+                sh "docker build -t $DOCKER_IMAGE ."
             }
         }
     }
 
     post {
         always {
-            echo 'Pipeline completed.'
+            echo "Cleaning up Sail containers..."
+            sh './vendor/bin/sail down || true'
         }
     }
 }
