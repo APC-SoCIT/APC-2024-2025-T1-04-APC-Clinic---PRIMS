@@ -1,104 +1,44 @@
 pipeline {
     agent {
         docker {
-            image 'composer:2.6' // includes PHP & Composer
-            args '-u root:root'   // run as root to allow installing Node/npm
+            image 'php-node-composer'  // the image we built
+            args '-u root:root'        // optional: run as root
         }
     }
 
     environment {
-        APP_NAME = "PRIMS"
-        APP_ENV = "testing"
-        DB_CONNECTION = "mysql"
-        DB_HOST = "127.0.0.1"
-        DB_PORT = "3306"
-        DB_DATABASE = "prims_test"
-        DB_USERNAME = "sail"       // change if different
-        DB_PASSWORD = "password"   // change if different
+        DB_CONNECTION = 'mysql'
+        DB_HOST = 'mysql_host'
+        DB_PORT = '3306'
+        DB_DATABASE = 'laravel_db'
+        DB_USERNAME = 'root'
+        DB_PASSWORD = 'password'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                echo 'Cloning repository...'
-                checkout([$class: 'GitSCM',
-                    branches: [[name: '*/jenkins/122_JM_CICD']],
-                    userRemoteConfigs: [[
-                        url: 'https://github.com/APC-SoCIT/APC-2024-2025-T1-04-APC-Clinic---PRIMS.git',
-                        credentialsId: 'prims'
-                    ]]
-                ])
+                git 'https://github.com/your-org/your-laravel-project.git'
             }
         }
 
-        stage('Install PHP & Composer Dependencies') {
+        stage('Install PHP dependencies') {
             steps {
-                echo 'Installing Composer dependencies...'
-                sh 'composer install --no-interaction --prefer-dist --optimize-autoloader'
+                sh 'composer install'
             }
         }
 
-        stage('Set APP Key & Run Migrations') {
+        stage('Install Node dependencies') {
             steps {
-                echo 'Generating app key and migrating database...'
-                sh '''
-                php artisan key:generate
-                php artisan migrate:fresh --seed
-                '''
+                sh 'npm install'
+                sh 'npm run build'  // or 'yarn build'
             }
         }
 
-        stage('Install Node & Build Frontend') {
+        stage('Run Tests') {
             steps {
-                echo 'Installing Node.js and building frontend...'
-                sh '''
-                curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-                apt-get install -y nodejs
-                npm install
-                npm audit fix
-                npm run build
-                '''
-            }
-        }
-
-        stage('Run Unit Tests') {
-            steps {
-                echo 'Running Laravel tests...'
                 sh 'php artisan test'
             }
-        }
-
-        stage('Run Integration Tests') {
-            steps {
-                echo 'Running basic integration test (curl)...'
-                sh 'curl -f http://localhost || exit 1'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                echo 'Creating Docker image...'
-                sh 'docker build -t wonderpets-prims:latest .'
-            }
-        }
-
-        stage('Commit Jenkinsfile') {
-            steps {
-                echo 'Committing Jenkinsfile...'
-                sh '''
-                git config user.email "jmmiyabe@student.apc.edu.ph"
-                git config user.name "jmmiyabe"
-                git add Jenkinsfile
-                git commit -m "Add Jenkinsfile" || true
-                git push origin HEAD:main
-                '''
-            }
-        }
-    }
-
-    post {
-        always {
-            echo 'Cleanup or notifications can go here'
         }
     }
 }
