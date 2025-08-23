@@ -5,7 +5,7 @@ pipeline {
         COMPOSE_FILE = 'docker-compose.yml'
         WWWUSER = '1000'
         WWWGROUP = '1000'
-        DB_CONNECTION = 'mysql
+        DB_CONNECTION = 'mysql'
         DB_HOST = 'mysql'
         DB_PORT = '3306'
         DB_DATABASE = 'prims_test'
