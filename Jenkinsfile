@@ -14,20 +14,19 @@ pipeline {
         APP_ENV = 'testing'
     }
 
-    stage('Install Dependencies') {
-        steps {
-            dir('PRIMS') {
-                sh '''
-                # Install Laravel Sail as a dev dependency
-                composer require laravel/sail --dev
+        stage('Install Dependencies') {
+            steps {
+                dir('PRIMS') {
+                    sh '''
+                    # Install Laravel Sail as a dev dependency
+                    composer require laravel/sail --dev
 
-                # Install all other Composer dependencies
-                composer install --no-interaction --prefer-dist --optimize-autoloader
-                '''
+                    # Install all other Composer dependencies
+                    composer install --no-interaction --prefer-dist --optimize-autoloader
+                    '''
+                }
             }
         }
-    }
-
 
         stage('Start Sail') {
             steps {
