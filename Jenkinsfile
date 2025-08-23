@@ -8,23 +8,16 @@ pipeline {
         DB_CONNECTION = 'mysql'
         DB_HOST = 'mysql'
         DB_PORT = '3306'
-        DB_DATABASE = 'prims_test'
+        DB_DATABASE = 'laravel'
         DB_USERNAME = 'sail'
         DB_PASSWORD = 'password'
-        APP_ENV = 'testing'
     }
 
     stages {
         stage('Install Dependencies') {
             steps {
                 dir('PRIMS') {
-                    sh '''
-                    # Install Laravel Sail as a dev dependency
-                    composer require laravel/sail --dev
-
-                    # Install all other Composer dependencies
-                    composer install --no-interaction --prefer-dist --optimize-autoloader
-                    '''
+                    sh 'composer install --no-interaction --prefer-dist --optimize-autoloader'
                 }
             }
         }
@@ -53,38 +46,15 @@ pipeline {
             }
         }
 
-        stage('Prepare Test Database') {
+        stage('Unit Test') {
             steps {
                 dir('PRIMS') {
-                    sh '''
-                    ./vendor/bin/sail artisan key:generate --env=testing
-                    ./vendor/bin/sail artisan migrate:fresh --seed --env=testing
-                    '''
+                    sh './vendor/bin/sail exec laravel.test php artisan test'
                 }
             }
         }
 
-        stage('Build Frontend Assets') {
-            steps {
-                dir('PRIMS') {
-                    sh '''
-                    ./vendor/bin/sail npm install
-                    ./vendor/bin/sail npm audit fix
-                    ./vendor/bin/sail npm run build
-                    '''
-                }
-            }
-        }
-
-        stage('Run Unit Tests') {
-            steps {
-                dir('PRIMS') {
-                    sh './vendor/bin/sail artisan test --env=testing'
-                }
-            }
-        }
-
-        stage('Run Integration Tests') {
+        stage('Integration Test') {
             steps {
                 dir('PRIMS') {
                     sh 'curl -f http://localhost || exit 1'
@@ -102,18 +72,16 @@ pipeline {
 
         stage('Commit Jenkinsfile') {
             steps {
-                dir('PRIMS') {
-                    sh '''
-                    git config user.email "jmmiyabe@student.apc.edu.ph"
-                    git config user.name "jmmiyabe"
-                    git add Jenkinsfile
-                    git commit -m "Add Jenkinsfile" || true
-                    git push origin HEAD:main
-                    '''
-                }
+                sh '''
+                git config user.email "jmmiyabe@student.apc.edu.ph"
+                git config user.name "jmmiyabe"
+                git add Jenkinsfile
+                git commit -m "Add Jenkinsfile" || true
+                git push origin HEAD:main
+                '''
             }
         }
-    } // end of stages
+    }
 
     post {
         always {
