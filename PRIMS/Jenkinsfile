@@ -2,67 +2,98 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "wonderpets-prims:${env.BUILD_NUMBER}"
+        APP_NAME = "PRIMS"
+        APP_ENV = "testing"
+        DB_CONNECTION = "mysql"
+        DB_HOST = "127.0.0.1"
+        DB_PORT = "3306"
+        DB_DATABASE = "prims_test"
+        DB_USERNAME = "sail"       // change if different
+        DB_PASSWORD = "password"   // change if different
     }
 
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                echo 'Cloning repository...'
+                checkout([$class: 'GitSCM',
+                    branches: [[name: '*/jenkins/122_JM_CICD']],
+                    userRemoteConfigs: [[
+                        url: 'https://github.com/APC-SoCIT/APC-2024-2025-T1-04-APC-Clinic---PRIMS.git',
+                        credentialsId: 'prims'
+                    ]]
+                ])
             }
         }
 
-        stage('Build & Install Dependencies') {
+        stage('Install PHP & Composer Dependencies') {
             steps {
+                echo 'Installing Composer dependencies...'
                 sh '''
-                docker run --rm -u $(id -u):$(id -g) \
-                -v $(pwd):/var/www/html -w /var/www/html \
-                laravelsail/php82-composer:latest \
-                composer install --no-interaction --prefer-dist
+                composer install --no-interaction --prefer-dist --optimize-autoloader
                 '''
             }
         }
 
-        stage('Run Migrations & Key') {
+        stage('Set APP Key & Run Migrations') {
             steps {
+                echo 'Generating app key and migrating database...'
                 sh '''
-                docker run --rm -u $(id -u):$(id -g) \
-                -v $(pwd):/var/www/html -w /var/www/html \
-                laravelsail/php82-composer:latest \
                 php artisan key:generate
-                docker run --rm -u $(id -u):$(id -g) \
-                -v $(pwd):/var/www/html -w /var/www/html \
-                laravelsail/php82-composer:latest \
                 php artisan migrate:fresh --seed
                 '''
             }
         }
 
-        stage('Frontend Build') {
+        stage('Install Node & Build Frontend') {
             steps {
+                echo 'Installing Node dependencies and building frontend...'
                 sh '''
-                docker run --rm -u $(id -u):$(id -g) \
-                -v $(pwd):/var/www/html -w /var/www/html node:20-alpine \
-                sh -c "npm install && npm run build"
+                npm install
+                npm audit fix
+                npm run build
                 '''
             }
         }
 
-        stage('Run Tests') {
+        stage('Run Unit Tests') {
             steps {
-                sh '''
-                docker run --rm -u $(id -u):$(id -g) \
-                -v $(pwd):/var/www/html -w /var/www/html \
-                laravelsail/php82-composer:latest \
-                php artisan test
-                '''
+                echo 'Running Laravel tests...'
+                sh 'php artisan test'
+            }
+        }
+
+        stage('Run Integration Tests') {
+            steps {
+                echo 'Running basic integration test (curl)...'
+                sh 'curl -f http://localhost || exit 1'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${DOCKER_IMAGE} ."
+                echo 'Creating Docker image...'
+                sh 'docker build -t wonderpets-prims:latest .'
             }
+        }
+
+        stage('Commit Jenkinsfile') {
+            steps {
+                echo 'Committing Jenkinsfile...'
+                sh '''
+                git config user.email "jmmiyabe@student.apc.edu.ph"
+                git config user.name "jmmiyabe"
+                git add Jenkinsfile
+                git commit -m "Add Jenkinsfile" || true
+                git push origin HEAD:main
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleanup or notifications can go here'
         }
     }
 }
