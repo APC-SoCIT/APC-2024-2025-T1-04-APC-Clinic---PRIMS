@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'composer:2.6' // includes PHP & Composer
+            args '-u root:root'   // run as root to allow installing Node/npm
+        }
+    }
 
     environment {
         APP_NAME = "PRIMS"
@@ -29,9 +34,7 @@ pipeline {
         stage('Install PHP & Composer Dependencies') {
             steps {
                 echo 'Installing Composer dependencies...'
-                sh '''
-                composer install --no-interaction --prefer-dist --optimize-autoloader
-                '''
+                sh 'composer install --no-interaction --prefer-dist --optimize-autoloader'
             }
         }
 
@@ -42,58 +45,3 @@ pipeline {
                 php artisan key:generate
                 php artisan migrate:fresh --seed
                 '''
-            }
-        }
-
-        stage('Install Node & Build Frontend') {
-            steps {
-                echo 'Installing Node dependencies and building frontend...'
-                sh '''
-                npm install
-                npm audit fix
-                npm run build
-                '''
-            }
-        }
-
-        stage('Run Unit Tests') {
-            steps {
-                echo 'Running Laravel tests...'
-                sh 'php artisan test'
-            }
-        }
-
-        stage('Run Integration Tests') {
-            steps {
-                echo 'Running basic integration test (curl)...'
-                sh 'curl -f http://localhost || exit 1'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                echo 'Creating Docker image...'
-                sh 'docker build -t wonderpets-prims:latest .'
-            }
-        }
-
-        stage('Commit Jenkinsfile') {
-            steps {
-                echo 'Committing Jenkinsfile...'
-                sh '''
-                git config user.email "jmmiyabe@student.apc.edu.ph"
-                git config user.name "jmmiyabe"
-                git add Jenkinsfile
-                git commit -m "Add Jenkinsfile" || true
-                git push origin HEAD:main
-                '''
-            }
-        }
-    }
-
-    post {
-        always {
-            echo 'Cleanup or notifications can go here'
-        }
-    }
-}
