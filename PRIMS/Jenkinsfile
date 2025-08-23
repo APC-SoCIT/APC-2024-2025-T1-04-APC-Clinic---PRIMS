@@ -2,64 +2,58 @@ pipeline {
     agent any
 
     environment {
-        APP_CONTAINER = "laravel_app"
+        // optional: define versions or credentials here
+        DOCKER_IMAGE = "yourorg/yourapp:${env.BUILD_NUMBER}"
     }
 
     stages {
-        stage('Checkout SCM') {
+        stage('Build') {
             steps {
-                checkout scm
-            }
-        }
-
-        stage('Build Containers') {
-            steps {
-                sh 'docker-compose up -d --build'
-            }
-        }
-
-        stage('Wait for Services') {
-            steps {
-                echo 'Waiting for MySQL...'
+                echo "Installing PHP & Node dependencies..."
                 sh '''
-                until docker exec ${APP_CONTAINER} php -r "new PDO('mysql:host=mysql;dbname=laravel_test', 'sail', 'password');"; do
-                    echo "Waiting for MySQL..."
-                    sleep 2
-                done
+                    ./vendor/bin/sail composer install --no-interaction --prefer-dist
+                    ./vendor/bin/sail npm ci
+                    ./vendor/bin/sail npm run build
                 '''
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Unit Test') {
             steps {
-                sh "docker exec ${APP_CONTAINER} composer install --no-interaction --prefer-dist --optimize-autoloader"
-                sh "docker exec ${APP_CONTAINER} npm install"
+                echo "Running Unit Tests..."
+                sh './vendor/bin/sail artisan test --testsuite=Unit'
             }
         }
 
-        stage('Prepare Database') {
+        stage('Deploy to Test Env') {
             steps {
-                sh "docker exec ${APP_CONTAINER} php artisan migrate --force"
+                echo "Starting Sail environment..."
+                sh '''
+                    ./vendor/bin/sail up -d
+                    ./vendor/bin/sail artisan migrate:fresh --seed
+                '''
             }
         }
 
-        stage('Run Unit Tests') {
+        stage('Integration Test') {
             steps {
-                sh "docker exec ${APP_CONTAINER} php artisan test"
+                echo "Running Integration Tests..."
+                sh './vendor/bin/sail artisan test --testsuite=Feature'
             }
         }
 
-        stage('Build Frontend') {
+        stage('Create Docker Image') {
             steps {
-                sh "docker exec ${APP_CONTAINER} npm run build"
+                echo "Building Docker Image..."
+                sh "docker build -t $DOCKER_IMAGE ."
             }
         }
     }
 
     post {
         always {
-            echo 'Shutting down containers...'
-            sh 'docker-compose down'
+            echo "Cleaning up Sail containers..."
+            sh './vendor/bin/sail down || true'
         }
     }
 }
