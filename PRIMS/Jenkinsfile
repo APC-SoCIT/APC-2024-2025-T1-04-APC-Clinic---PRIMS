@@ -10,7 +10,18 @@ pipeline {
             steps {
                 echo "Installing PHP & Node dependencies..."
                 sh '''
-                    ./vendor/bin/sail composer install --no-interaction --prefer-dist
+                    # sail installation
+                    docker run --rm -u "$(id -u):$(id -g)" \
+                        -v $(pwd):/var/www/html \
+                        -w /var/www/html \
+                        laravelsail/php82-composer:latest composer require laravel/sail --dev
+
+                    # install dependencies
+                    docker run --rm -u "$(id -u):$(id -g)" \
+                        -v $(pwd):/var/www/html \
+                        -w /var/www/html \
+                        laravelsail/php82-composer:latest composer install --no-interaction --prefer-dist --optimize-autoloader
+
                     ./vendor/bin/sail npm ci
                     ./vendor/bin/sail npm run build
                 '''
