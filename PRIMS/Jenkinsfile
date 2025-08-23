@@ -45,3 +45,60 @@ pipeline {
                 php artisan key:generate
                 php artisan migrate:fresh --seed
                 '''
+            }
+        }
+
+        stage('Install Node & Build Frontend') {
+            steps {
+                echo 'Installing Node.js and building frontend...'
+                sh '''
+                curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+                apt-get install -y nodejs
+                npm install
+                npm audit fix
+                npm run build
+                '''
+            }
+        }
+
+        stage('Run Unit Tests') {
+            steps {
+                echo 'Running Laravel tests...'
+                sh 'php artisan test'
+            }
+        }
+
+        stage('Run Integration Tests') {
+            steps {
+                echo 'Running basic integration test (curl)...'
+                sh 'curl -f http://localhost || exit 1'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                echo 'Creating Docker image...'
+                sh 'docker build -t wonderpets-prims:latest .'
+            }
+        }
+
+        stage('Commit Jenkinsfile') {
+            steps {
+                echo 'Committing Jenkinsfile...'
+                sh '''
+                git config user.email "jmmiyabe@student.apc.edu.ph"
+                git config user.name "jmmiyabe"
+                git add Jenkinsfile
+                git commit -m "Add Jenkinsfile" || true
+                git push origin HEAD:main
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleanup or notifications can go here'
+        }
+    }
+}
