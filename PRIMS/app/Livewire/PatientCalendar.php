@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ClinicAppointmentNotif;
 use App\Mail\PatientAppointmentNotif;
+use App\Models\Feedback;
 
 
 class PatientCalendar extends Component
@@ -18,6 +19,10 @@ class PatientCalendar extends Component
     public $selectedDate;
     public $selectedTime;
     public $selectedDoctor;
+    public $selectedEmoji = null;
+    public $bookingFeedback;
+    public $anonymous = false;
+    public $appointmentId;
     public $month;
     public $year;
     public $daysInMonth = [];
@@ -35,6 +40,7 @@ class PatientCalendar extends Component
     public $existingAppointment = false;
     public $allTimes = [];
     public $fullyBookedDates = [];
+    public $showBookingFeedbackModal = false;
 
     public function mount()
     {
@@ -245,6 +251,7 @@ class PatientCalendar extends Component
             'clinic_staff_id' => $this->selectedDoctor->id,
         ]);
 
+        $this->appointmentId = $appointment->id;
         $this->resetSelection();        
         $this->hasUpcomingAppointment = true;
         $this->showSuccessModal = true;
@@ -273,6 +280,31 @@ class PatientCalendar extends Component
     public function closeSuccessModal()
     {
         $this->showSuccessModal = false;
+        $this->showBookingFeedbackModal = true;
+    }
+
+    public function selectEmoji($emoji)
+    {
+        $this->selectedEmoji = $this->selectedEmoji === $emoji ? null : $emoji;
+    }
+
+    public function skipBookingFeedback()
+    {
+        $this->showBookingFeedbackModal = false;
+    }
+
+    public function submitBookingFeedback()
+    {
+        Feedback::create([
+            'user_id' => Auth::id(),
+            'appointment_id' => $this->appointmentId,
+            'type' => 'booking',
+            'emoji' => $this->selectedEmoji,
+            'comment' => $this->bookingFeedback,
+            'anonymous' => $this->anonymous,
+        ]);
+
+        $this->reset(['selectedEmoji', 'bookingFeedback', 'anonymous', 'showBookingFeedbackModal']);
     }
 
     public function render()
