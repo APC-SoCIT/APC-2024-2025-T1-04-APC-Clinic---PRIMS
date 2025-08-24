@@ -164,7 +164,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="w-3/5">
-                                                    <div class="p-3 border border-gray-200 rounded-lg bg-prims-yellow-2 shadow-md transition-all duration-150 transform">
+                                                    <div class="p-3 border border-gray-200 rounded-lg bg-white shadow-md transition-all duration-150 transform">
                                                         <p class="text-lg font-semibold mb-2">Medical Findings:</p>    
                                                         <p>{{ $appointment->reason_for_visit }}</p>
                                                         <p>asdaiughskdf</p>
