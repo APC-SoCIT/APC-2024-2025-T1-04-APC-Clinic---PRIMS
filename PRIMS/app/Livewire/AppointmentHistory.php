@@ -58,7 +58,7 @@ class AppointmentHistory extends Component
                 ->first();
 
             if ($schedule) {
-                $availableTimes = json_decode($schedule->available_times, true) ?? [];
+                $availableTimes = $schedule->available_times ?? [];
 
                 // Add the canceled time back if it's not already there
                 $newTime = Carbon::parse($appointment->appointment_date)->format('g:i A');
@@ -67,7 +67,7 @@ class AppointmentHistory extends Component
                 }
 
                 // Save the updated available times
-                $schedule->update(['available_times' => json_encode($availableTimes)]);
+                $schedule->update(['available_times' => $availableTimes]);
             }
 
             // Refresh appointments

@@ -39,18 +39,19 @@
 
                 <!-- right - appointments -->
                 <div>
-                    <div class="flex flex-col gap-3 mt-4">
-                        <span class="text-md"><strong>Upcoming Appointment:</strong></span>
+                    <div class="p-3 border border-gray-200 rounded-lg bg-white shadow-md>
+                        <p class="text-md"><strong>Upcoming Appointment:</strong></p>
 
                         @if($hasUpcomingAppointment)
-                            <span class="text-sm">
+                            <p class="text-2xl underline"><strong>
                                 {{ \Carbon\Carbon::parse($hasUpcomingAppointment->appointment_date)->format('F j, Y - h:i A') }} 
-                                <br> Dr. {{ $hasUpcomingAppointment->doctor->clinic_staff_fname }} {{ $hasUpcomingAppointment->doctor->clinic_staff_lname }}
-                                <br><em> {{ $hasUpcomingAppointment->reason_for_visit }} </em>
-                            </span>
-                            <x-button wire:click="confirmCancel('{{ $hasUpcomingAppointment->id }}')" class="mt-3">
-                            Cancel Appointment
-                            </x-button>
+                            </strong></p>
+                            <p> 
+                                Dr. {{ $hasUpcomingAppointment->doctor->clinic_staff_fname }} {{ $hasUpcomingAppointment->doctor->clinic_staff_lname }}
+                            </p>
+                            <p class="max-w-sm break-all">
+                                Reason: {{ $hasUpcomingAppointment->reason_for_visit }}
+                            </p>
                         @else
                             <span class="text-sm text-gray-500">None</span>
                         @endif
@@ -138,11 +139,10 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 border-b dark:border-gray-600">
-                                        @if ($appointment->status === 'completed')
-                                            <a href="{{ route('print.medical.record', $appointment->id) }}" 
-                                            class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600">
-                                            Print Medical Record
-                                            </a>
+                                        @if ($appointment->status == 'pending' || $appointment->status == 'approved')
+                                            <button class="text-blue-500 text-sm underline" wire:click="confirmCancel('{{ $appointment->id }}')">
+                                                Cancel Appointment
+                                            </button>
                                         @else
                                             <span class="text-gray-500 text-sm">Not Available</span>
                                         @endif
