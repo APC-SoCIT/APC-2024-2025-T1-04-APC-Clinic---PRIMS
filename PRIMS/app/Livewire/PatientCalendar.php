@@ -305,7 +305,6 @@ class PatientCalendar extends Component
         ]);
 
         $this->reset(['selectedEmoji', 'bookingFeedback', 'anonymous', 'showBookingFeedbackModal']);
-        session()->flash('message', 'Thank you for your feedback!');
     }
 
     public function render()
