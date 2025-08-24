@@ -118,7 +118,7 @@
                         </thead>
                         <tbody>
                             @foreach ($appointmentHistory as $index => $appointment)
-                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-600">
+                                <tr class="hover:bg-gray-50 cursor-pointer" wire:click="toggleExpand({{ $appointment->id }})">
                                     <td class="px-6 py-4 border-b dark:border-gray-600">{{ $index + 1 }}</td>
                                     <td class="px-6 py-4 border-b dark:border-gray-600">{{ $appointment->patient->apc_id_number }}</td>
                                     <td class="px-6 py-4 border-b dark:border-gray-600">
@@ -148,6 +148,38 @@
                                         @endif
                                     </td>
                                 </tr>
+
+                                @if ($expandedRow === $appointment->id)
+                                    <tr class="bg-gray-50">
+                                        <td colspan="7" class="px-6 py-4 border-b">
+                                            <div class="flex flex-row gap-4">
+                                                <div class="w-2/5 flex flex-col gap-3">
+                                                    <div class="p-3 border border-gray-200 rounded-lg bg-white shadow-md transition-all duration-150 transform">
+                                                        <p class="text-lg font-semibold mb-2">Reason for Visit:</p>    
+                                                        <p>{{ $appointment->reason_for_visit }}</p>
+                                                    </div>
+                                                    <div class="p-3 border border-gray-200 rounded-lg bg-white shadow-md transition-all duration-150 transform">
+                                                        <p class="text-lg font-semibold mb-2">Feedback:</p>    
+                                                        <p class="text-sm text-gray-700">Help us improve our services! Answering will only take around 3 minutes.</p>
+                                                    </div>
+                                                </div>
+                                                <div class="w-3/5">
+                                                    <div class="p-3 border border-gray-200 rounded-lg bg-prims-yellow-2 shadow-md transition-all duration-150 transform">
+                                                        <p class="text-lg font-semibold mb-2">Medical Findings:</p>    
+                                                        <p>{{ $appointment->reason_for_visit }}</p>
+                                                        <p>asdaiughskdf</p>
+                                                        <p>qqewoiuwoeiuqwoirujs,dfn</p>
+                                                        <p>alsjdlkasjdlajdlkjas</p>
+                                                        <p>asdasdasdadada</p>
+                                                        <p>vxcvxcvxcvxc</p>
+                                                        <p>asdasdadawqe</p>
+                                                        <p>asdasdasdadasd</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
                             @endforeach
                         </tbody>
                     </table>
