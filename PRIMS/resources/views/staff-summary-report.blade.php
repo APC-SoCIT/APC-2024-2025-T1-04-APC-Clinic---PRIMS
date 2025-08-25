@@ -1,7 +1,14 @@
 <x-app-layout>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <div class="py-3">
+        <div class="max-w-[90rem] mx-auto sm:px-6 lg:px-8">
+            <x-prims-sub-header>
+                Summary Report
+            </x-prims-sub-header>
+        </div>
+    </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-6">
         
         <!-- 🔹 Filter Form (Top) -->
         <form method="GET" action="{{ route('summary-report') }}" class="bg-white shadow-lg rounded-lg p-6 mb-6">
