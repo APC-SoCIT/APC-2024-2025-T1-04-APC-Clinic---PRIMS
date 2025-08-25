@@ -7,3 +7,7 @@
 [x-cloak] {
     display: none;
 }
+
+html {
+    overflow-y: scroll;
+}

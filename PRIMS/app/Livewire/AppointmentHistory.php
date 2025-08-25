@@ -18,6 +18,12 @@ class AppointmentHistory extends Component
     public $cancelAppointmentId;
     public $cancelReason;
     public $showCancelSuccessModal = false;
+    public $expandedRow = null;
+    public $showFeedbackModal = false;
+    public $feedbackAppointmentId;
+    public $feedbackText;
+    public $rating = 0;
+    
 
     public function mount()
     {
@@ -79,6 +85,25 @@ class AppointmentHistory extends Component
             $this->showCancelModal = false;
             $this->showCancelSuccessModal = true;
         }
+    }
+
+    public function toggleExpand($appointmentId)
+    {
+        $this->expandedRow = $this->expandedRow === $appointmentId ? null : $appointmentId;
+    }
+
+    public function openFeedbackModal($appointmentId)
+    {
+        $this->feedbackAppointmentId = $appointmentId;
+        $this->showFeedbackModal = true;
+    }
+
+    public function closeFeedbackModal()
+    {
+        $this->showFeedbackModal = false;
+        $this->feedbackAppointmentId = null;
+        $this->feedbackText = null;
+        $this->rating = null;
     }
 
     public function render()
