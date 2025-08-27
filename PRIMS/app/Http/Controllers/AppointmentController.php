@@ -11,6 +11,7 @@ use App\Models\Patient;
 use App\Notifications\AppointmentBooked;
 use App\Mail\ClinicAppointmentNotif;
 use App\Mail\PatientAppointmentNotif;
+use App\Http\Requests\StoreAppointmentRequest;
 
 class AppointmentController extends Controller
 {
@@ -47,32 +48,21 @@ class AppointmentController extends Controller
     }
 
     // for patients booking their own appointments
-    public function store(Request $request)
+    public function store(StoreAppointmentRequest $request)
     {
-        $request->validate([
-            'appointment_date' => 'required|date',
-            'appointment_time' => 'required', 
-            'doctor_id' => 'required|exists:doctors,id', 
-        ]);
-
         $patient = Auth::user()->patient; // Get the logged-in patient
 
         if (!$patient) {
             abort(403, 'Unauthorized action.'); 
         }
 
-        $appointment = new Appointment();
-        $appointment->appointment_date = $request->input('appointment_date');
-        $appointment->appointment_time = $request->input('appointment_time');
-        $appointment->doctor_id = $request->input('doctor_id'); // Assign the doctor
-        $appointment->patient_id = $patient->id; // Use the relationship
+        $appointment = $appointmentService->createAppointment(
+            $request->validated(),
+            $patient,
+            Auth::user()
+        );
 
-        $appointment->save();
-        
-        Mail::to('primsapcclinic@gmail.com')->send(new ClinicAppointmentNotif($appointment, $selectedDate, $selectedTime));
-
-        Mail::to(Auth::user()->email)->send(new PatientAppointmentNotif($appointment, $selectedDate, $selectedTime));
-
-        return redirect()->route('appointments.index')->with('success', 'Appointment created successfully.');
+        return redirect()->route('appointments.index')
+            ->with('success', 'Appointment created successfully.');
     }
 }
