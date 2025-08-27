@@ -15,7 +15,7 @@ use App\Http\Requests\StoreAppointmentRequest;
 
 class AppointmentController extends Controller
 {
-    // for patients to see their own appointments
+    // Function for patients to see their own appointments
     public function index()
     {
         $patient = Auth::user()->patient;
@@ -29,6 +29,7 @@ class AppointmentController extends Controller
         return view('appointments.index', compact('appointments'));
     }
 
+    // Function for patients to see their appointment history
     public function showAppointmentHistory()
     {
         $patient = Auth::user()->patient;
@@ -47,7 +48,10 @@ class AppointmentController extends Controller
         return view('appointment-history', compact('patient', 'appointmentHistory', 'hasUpcomingAppointment'));
     }
 
-    // for patients booking their own appointments
+    /*** Function for patients to book an appointment
+     * Request is handled by StoreAppointmentRequest for validation
+     * Service is handled by AppointmentService
+    */
     public function store(StoreAppointmentRequest $request)
     {
         $patient = Auth::user()->patient; // Get the logged-in patient

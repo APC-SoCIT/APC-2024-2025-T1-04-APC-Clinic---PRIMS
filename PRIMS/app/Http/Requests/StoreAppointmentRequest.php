@@ -19,6 +19,8 @@ class StoreAppointmentRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+
+    // Validation rules for booking an appointment
     public function rules(): array
     {
         return [

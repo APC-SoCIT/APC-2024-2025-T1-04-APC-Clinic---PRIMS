@@ -8,6 +8,7 @@ use App\Mail\PatientAppointmentNotif;
 
 class AppointmentService
 {
+    // Function to create an appointment and send notification emails
     public function createAppointment(array $data, $patient, $user)
     {
         $appointment = Appointment::create([
