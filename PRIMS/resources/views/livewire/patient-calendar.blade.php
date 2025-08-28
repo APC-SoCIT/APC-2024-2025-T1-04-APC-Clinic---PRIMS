@@ -175,6 +175,46 @@
                 </div>
             </div>
         @endif
+
+        @if($showBookingFeedbackModal)
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
+                <div class="bg-white p-4 rounded-lg shadow-lg max-w-sm">
+                    <h3 class="text-xl font-semibold pb-3 text-black text-center">How satisfied are you with the booking process?</h3>
+                    <div class="flex justify-center gap-2">
+                        <button 
+                            wire:click="selectEmoji('sad')" 
+                            class="px-4 py-2 rounded-lg hover:bg-gray-200 active:bg-gray-300 {{ $selectedEmoji === 'sad' ? 'bg-red-200' : '' }}">
+                            <img src="{{ asset('img/sad.png') }}" class="w-12 h-12">
+                        </button>
+
+                        <button 
+                            wire:click="selectEmoji('flat')" 
+                            class="px-4 py-2 rounded-lg hover:bg-gray-200 active:bg-gray-300 {{ $selectedEmoji === 'flat' ? 'bg-gray-200' : '' }}">
+                            <img src="{{ asset('img/flat.png') }}" class="w-12 h-12">
+                        </button>
+
+                        <button 
+                            wire:click="selectEmoji('happy')" 
+                            class="px-4 py-2 rounded-lg hover:bg-gray-200 active:bg-gray-300 {{ $selectedEmoji === 'happy' ? 'bg-green-200' : '' }}">
+                            <img src="{{ asset('img/happy.png') }}" class="w-12 h-12">
+                        </button>
+
+                    </div>
+                    @if($selectedEmoji)
+                        <div>
+                            <p class="text-sm text-gray-500 text-center mt-2">Add a quick comment to help us improve!</p>
+                            <textarea wire:model="bookingFeedback" id="bookingFeedback" placeholder="Your feedback..." class=" text-sm border border-gray-300 rounded-lg w-full p-2 mt-2"></textarea>
+                            <input wire:model="anonymous" id="anonymous" type="checkbox" name="anonymous" class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto" />
+                            <label for="anonymous" class="text-sm text-gray-500">Keep me anonymous</label>
+                        </div>
+                    @endif
+                    <div class="mt-4 flex justify-center gap-2">
+                        <x-prims-sub-button1 wire:click="skipBookingFeedback">Skip</x-prims-sub-button1>
+                        <x-prims-sub-button1 wire:click="submitBookingFeedback">Submit</x-prims-sub-button1>
+                    </div>
+                </div>
+            </div>
+        @endif
         
     </div>
 </div>

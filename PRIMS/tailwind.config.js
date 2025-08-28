@@ -19,7 +19,8 @@ export default {
             },
             colors: {
                 'prims-yellow': {
-                    1: '#F4BF4F', // Darker
+                    1: '#F4BF4F',
+                    2: '#ffecc4',
                 },
                 'prims-azure': {
                     100: '#1150A3',  // for the login

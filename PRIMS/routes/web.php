@@ -1,18 +1,13 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use App\Http\Controllers\AppointmentController;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\PatientController;
-use App\Http\Controllers\ClinicStaffController;
-use App\Mail\AppointmentNotif;
 use App\Http\Controllers\StaffSummaryReportController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\MedicalRecordController;
-use App\Livewire\ViewMedicalRecord;
+use App\Http\Controllers\FeedbackController;
 
 $url = config('app.url');
 URL::forceRootUrl($url);
@@ -188,4 +183,7 @@ Route::middleware([
     // Route::get('/medical-inventory', function () {
     //     return view('medical-inventory');
     // })->name('medical-inventory');
+
+    // Feedback route
+    Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
 });
