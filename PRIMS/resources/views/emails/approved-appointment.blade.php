@@ -1,15 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Appointment Status</title>
 </head>
-<body>
-    <p>Dear {{ $appointment->patient->first_name }} {{ $appointment->patient->middle_initial }}. {{ $appointment->patient->last_name }},</p>
-    <p>Your appointment on {{ $appointment->appointment_date }} has been approved.</p>
-    
-    <p>Kindly come in early or on time on your appointment.</p>
-
-    <p>Thank you,
-    <br>PRIMS - APC Clinic</p>
+<body style="margin:0; padding:0; background-color:#f7f9fc; font-family: Arial, Helvetica, sans-serif;">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr>
+            <td align="center" style="padding: 30px 15px;">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600"
+                    style="background-color:#ffffff; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); overflow:hidden;">
+                    <!-- Header -->
+                    <tr>
+                        <td style="background-color:#F4BF4F; padding:20px 30px; text-align:center;">
+                            <h1 style="margin:0; font-size:24px; font-weight:bold;"> PRIMS - APC Clinic </h1>
+                            <p style="margin:5px 0 0; color:#1f3a93; font-size:14px; font-weight:bold;"> Appointment Status </p>
+                        </td>
+                    </tr>
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding:30px; color:#333;">
+                            <p style="font-size:16px; margin-bottom:15px;">
+                                Dear <strong>{{ $appointment->patient->first_name }},</strong>
+                            </p>
+                            <p style="font-size:16px; margin-bottom:10px;">
+                                Your appointment on <strong>{{ $selectedDate }}</strong> at <strong>{{ $selectedTime }}</strong> has been:
+                            </p>
+                            <div style="background-color:#f1f7ff; padding:10px; border-radius:8px; margin:10px 0; font-size:15px; item-align:center; text-color:#008000;">
+                                <p style="margin:5px 0; color:#008000; text-align:center"><strong>Approved</strong></p>
+                            </div>
+                            <p style="font-size:15px; margin-top:20px; margin-bottom:30px;">
+                                Kindly come in early or on time on your appointment.
+                                <br><br>
+                                Thank you,
+                                <br>
+                                PRIMS - APC Clinic
+                            </p>
+                        </td>
+                    </tr>
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color:#f1f1f1; padding:15px; text-align:center; font-size:13px; color:#777;">
+                            This is an automated email from <strong>PRIMS - APC Clinic</strong>. Please do not reply to this message.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
