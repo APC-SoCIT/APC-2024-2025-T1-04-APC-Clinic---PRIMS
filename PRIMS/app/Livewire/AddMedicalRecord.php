@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 class AddMedicalRecord extends Component
 {
-    public $apc_id_number, $email, $first_name, $mi, $last_name, $contact_number, $dob, $age, $gender, $street_number, $barangay, $city, $province, $zip_code, $country, $reason, $nationality, $description, $diagnosis, $allergies, $pe, $prescription;
+    public $apc_id_number, $email, $first_name, $mi, $last_name, $contact_number, $dob, $age, $gender, $street_number, $barangay, $city, $province, $zip_code, $country, $reason, $nationality, $description, $diagnosis, $allergies, $hospitalization, $operation, $pe, $prescription;
     public $appointment_id;
     public $fromStaffCalendar = false;
 
@@ -27,6 +27,14 @@ class AddMedicalRecord extends Component
 
     public $social_history = [
         'Smoker' => null, 'Vape' => null, 'Alcohol' => null, 'Medications' => null
+    ];
+
+    public $obgyne_history = [
+        'LNMP' => null, 'OB Score' => null, 'Date of Last Delivery' => null
+    ];
+
+    public $immunizations = [
+        'Hepa B' => null, 'HPV' => null, 'FLU VAC' => null, 'COVID-19 1st' => null, 'COVID-19 2nd' => null, 'Booster 1' => null, 'Booster 2' => null
     ];
 
     public function mount($appointment_id = null, $fromStaffCalendar = false)

@@ -130,10 +130,12 @@
                                                                 <p class="text-sm text-gray-700">You have already submitted feedback for this appointment. Thank you!</p>
                                                             @else
                                                             <p class="text-sm text-gray-700">Help us improve our services! Answering will only take around 1-2 minutes.</p>
-                                                            <x-button class="mt-2 px-3 py-1 text-sm" 
-                                                                wire:click="openFeedbackModal({{ $appointment->id }})">
-                                                                Submit Feedback
-                                                            </x-button>
+                                                            <div class="flex justify-end mt-2">
+                                                                <x-button class="px-3 py-1 text-sm" 
+                                                                    wire:click="openFeedbackModal({{ $appointment->id }})">
+                                                                    Submit Feedback
+                                                                </x-button>
+                                                            </div>
                                                             @endif
                                                         @else
                                                         <p class="text-sm text-gray-700">Feedback is only available for completed appointments.</p>
@@ -163,10 +165,12 @@
                                                             <p class="text-sm text-gray-500 mt-2"><em>No medical findings available yet.</em></p>
                                                         @endif
                                                         @if($appointment->medicalRecord)
-                                                        <x-button class="mt-2 px-3 py-1 text-sm" 
-                                                            wire:click="downloadMedicalRecord({{ $appointment->medicalRecord->id }})">
-                                                            Download Medical Record
-                                                        </x-button>
+                                                            <div class="flex justify-end mt-2">
+                                                                <x-button class="px-3 py-1 text-sm" 
+                                                                    wire:click="downloadMedicalRecord({{ $appointment->medicalRecord->id }})">
+                                                                    Download Medical Record
+                                                                </x-button>
+                                                            </div>
                                                         @endif
                                                     </div>
                                                 </div>
