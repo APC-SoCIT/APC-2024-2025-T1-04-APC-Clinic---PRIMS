@@ -131,24 +131,36 @@ class AddMedicalRecord extends Component
             'diagnosis' => 'required', 'pe' => 'required', 'prescription' => 'required',
         ]);
 
-        $medicalRecord = MedicalRecord::updateOrCreate(
-            ['apc_id_number' => $this->apc_id_number],
-            [
-                'appointment_id' => $this->appointment_id,
-                'email' => $this->email, 'first_name' => $this->first_name, 'mi' => $this->mi,
-                'last_name' => $this->last_name, 'dob' => $this->dob, 'age' => $this->age,
-                'gender' => $this->gender, 'contact_number' => $this->contact_number,
-                'street_number' => $this->street_number, 'barangay' => $this->barangay,
-                'city' => $this->city, 'province' => $this->province, 'zip_code' => $this->zip_code,
-                'country' => $this->country, 'nationality' => $this->nationality,
-                'reason' => $this->reason, 'description' => $this->description,
-                'diagnosis' => $this->diagnosis, 'allergies' => $this->allergies,
-                'past_medical_history' => json_encode($this->past_medical_history),
-                'family_history' => json_encode($this->family_history),
-                'social_history' => json_encode($this->social_history),
-                'last_visited' => now(), 'pe' => $this->pe, 'prescription' => $this->prescription,
-            ]
-        );
+        $medicalRecord = MedicalRecord::create([
+            'appointment_id' => $this->appointment_id,
+            'apc_id_number' => $this->apc_id_number,
+            'email' => $this->email,
+            'first_name' => $this->first_name,
+            'mi' => $this->mi,
+            'last_name' => $this->last_name,
+            'dob' => $this->dob,
+            'age' => $this->age,
+            'gender' => $this->gender,
+            'contact_number' => $this->contact_number,
+            'street_number' => $this->street_number,
+            'barangay' => $this->barangay,
+            'city' => $this->city,
+            'province' => $this->province,
+            'zip_code' => $this->zip_code,
+            'country' => $this->country,
+            'nationality' => $this->nationality,
+            'reason' => $this->reason,
+            'description' => $this->description,
+            'diagnosis' => $this->diagnosis,
+            'allergies' => $this->allergies,
+            'past_medical_history' => json_encode($this->past_medical_history),
+            'family_history' => json_encode($this->family_history),
+            'social_history' => json_encode($this->social_history),
+            'last_visited' => now(),
+            'pe' => $this->pe,
+            'prescription' => $this->prescription,
+        ]);
+
 
         if ($this->fromStaffCalendar && $this->appointment_id) {
             Appointment::where('id', $this->appointment_id)->update(['status' => 'completed']);
