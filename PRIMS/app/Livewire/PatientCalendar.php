@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\ClinicAppointmentNotif;
 use App\Mail\PatientAppointmentNotif;
 use App\Models\Feedback;
+use App\Models\Patient;
 
 
 class PatientCalendar extends Component
@@ -247,7 +248,7 @@ class PatientCalendar extends Component
             'appointment_date' => $appointmentDate,
             'status' => 'pending',
             'reason_for_visit' => $this->reasonForVisit,
-            'patient_id' => Auth::id(),
+            'patient_id' => $this->patient->id,
             'clinic_staff_id' => $this->selectedDoctor->id,
         ]);
 
