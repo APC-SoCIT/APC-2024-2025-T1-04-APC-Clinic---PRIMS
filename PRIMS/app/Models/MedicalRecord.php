@@ -37,6 +37,7 @@ class MedicalRecord extends Model
         'prescription',
         'last_visited',
         'appointment_id',
+        'archived_at',
     ];
 
     protected static function booted()
@@ -53,7 +54,7 @@ class MedicalRecord extends Model
 
     public function appointment()
     {
-        return $this->belongsTo(Appointment::class);
+        return $this->belongsTo(Appointment::class, 'appointment_id');
     }
 
     public function scopeArchived($query)

@@ -124,25 +124,48 @@
                                                         <p class="text-sm text-gray-700">{{ $appointment->reason_for_visit }}</p>
                                                     </div>
                                                     <div class="p-3 border border-gray-200 rounded-lg bg-white shadow-md transition-all duration-150 transform">
-                                                        <p class="text-lg font-semibold mb-2">Feedback:</p>    
-                                                        <p class="text-sm text-gray-700">Help us improve our services! Answering will only take around 1-2 minutes.</p>
-                                                        <x-button class="mt-2 px-3 py-1 text-sm" 
-                                                            wire:click="openFeedbackModal({{ $appointment->id }})">
-                                                            Submit Feedback
-                                                        </x-button>
+                                                        <p class="text-lg font-semibold mb-2">Feedback:</p>
+                                                        @if($appointment->status == 'completed')    
+                                                            @if($appointment->feedback)
+                                                                <p class="text-sm text-gray-700">You have already submitted feedback for this appointment. Thank you!</p>
+                                                            @else
+                                                            <p class="text-sm text-gray-700">Help us improve our services! Answering will only take around 1-2 minutes.</p>
+                                                            <x-button class="mt-2 px-3 py-1 text-sm" 
+                                                                wire:click="openFeedbackModal({{ $appointment->id }})">
+                                                                Submit Feedback
+                                                            </x-button>
+                                                            @endif
+                                                        @else
+                                                        <p class="text-sm text-gray-700">Feedback is only available for completed appointments.</p>
+                                                        @endif
                                                     </div>
                                                 </div>
                                                 <div class="w-3/5">
                                                     <div class="p-3 border border-gray-200 rounded-lg bg-white shadow-md transition-all duration-150 transform">
-                                                        <p class="text-lg font-semibold mb-2">Medical Findings:</p>    
-                                                        <p>{{ $appointment->reason_for_visit }}</p>
-                                                        <p>asdaiughskdf</p>
-                                                        <p>qqewoiuwoeiuqwoirujs,dfn</p>
-                                                        <p>alsjdlkasjdlajdlkjas</p>
-                                                        <p>asdasdasdadada</p>
-                                                        <p>vxcvxcvxcvxc</p>
-                                                        <p>asdasdadawqe</p>
-                                                        <p>asdasdasdadasd</p>
+                                                        <p class="text-lg font-semibold mb-2">Medical Concerns:</p>    
+                                                        @if($appointment->medicalRecord)
+                                                            <div class="mt-2">
+                                                                <p class="text-sm text-gray-700"><strong>Reason for Visit (Category):</strong> {{ $appointment->medicalRecord->reason }}</p>
+                                                                <p class="text-sm text-gray-700"><strong>Description of Symptoms:</strong> {{ $appointment->medicalRecord->description }}</p>
+                                                                <p class="text-sm text-gray-700"><strong>Allergies:</strong> {{ $appointment->medicalRecord->allergies }}</p>
+                                                            </div>
+                                                        @else
+                                                            <p class="text-sm text-gray-500 mt-2">No medical findings available yet.</p>
+                                                        @endif
+                                                        <p class="text-lg font-semibold my-2">Medical Findings:</p>    
+                                                        @if($appointment->medicalRecord)
+                                                            <div class="mt-2">
+                                                                <p class="text-sm text-gray-700"><strong>Physical Examination:</strong> {{ $appointment->medicalRecord->pe }}</p>
+                                                                <p class="text-sm text-gray-700"><strong>Diagnosis:</strong> {{ $appointment->medicalRecord->diagnosis }}</p>
+                                                                <p class="text-sm text-gray-700"><strong>Prescription:</strong> {{ $appointment->medicalRecord->prescription }}</p>
+                                                            </div>
+                                                        @else
+                                                            <p class="text-sm text-gray-500 mt-2">No medical findings available yet.</p>
+                                                        @endif
+                                                        <x-button class="mt-2 px-3 py-1 text-sm" 
+                                                            wire:click="">
+                                                            Print Medical Record
+                                                        </x-button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -200,7 +223,7 @@
                 <p class="mt-3">1. How would you rate your overall consultation experience?</p>
                     <div class="flex justify-center space-x-1 mt-2">
                         @for($i = 1; $i <= 5; $i++)
-                            <svg wire:click="$set('rating', {{ $i }})"
+                            <svg wire:click="setRating({{ $i }})"
                                 xmlns="http://www.w3.org/2000/svg" 
                                 viewBox="0 0 24 24" 
                                 class="w-7 h-7 cursor-pointer transition-transform transform hover:scale-110 
@@ -211,10 +234,13 @@
                         @endfor
                     </div>
                 <p class="mt-3">3. What areas do you think we could improve?</p>
-                    <textarea wire:model.defer="feedbackText" class="w-full p-2 border rounded mt-3 mb-3" placeholder="Enter your feedback here..."></textarea>
+                    <textarea wire:model.defer="consultationFeedback" class="w-full p-2 border rounded mt-3 mb-3" placeholder="Enter your feedback here..."></textarea>
                 </p>
                 <x-button wire:click="closeFeedbackModal" class="mt-3 px-3 py-1 text-sm">
                     Cancel
+                </x-button>
+                <x-button wire:click="submitConsultationFeedback" class="mt-3 px-3 py-1 text-sm">
+                    Submit
                 </x-button>
             </div>
         </div>
