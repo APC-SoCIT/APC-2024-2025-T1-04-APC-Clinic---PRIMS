@@ -105,7 +105,7 @@
                                     </td>
                                     <td class="px-6 py-4 border-b dark:border-gray-600">
                                         @if ($appointment->status == 'pending' || $appointment->status == 'approved')
-                                            <button class="text-blue-500 text-sm underline" wire:click="confirmCancel('{{ $appointment->id }}')">
+                                            <button class="text-blue-500 text-sm underline" wire:click.stop="confirmCancel('{{ $appointment->id }}')">
                                                 Cancel Appointment
                                             </button>
                                         @else
