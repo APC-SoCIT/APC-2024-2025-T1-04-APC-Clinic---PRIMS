@@ -143,28 +143,6 @@ class AddMedicalRecord extends Component
         $this->dispatch('recordAdded');
     }
 
-    public function submitMedicalRecord()
-    {
-        // Save medical record logic
-        MedicalRecord::create([
-            'appointment_id' => $this->appointment_id,
-            'patient_id' => $this->patient_id,
-            'diagnosis' => $this->diagnosis,
-            'treatment' => $this->treatment,
-            'notes' => $this->notes,
-        ]);
-    
-        // If it's from an appointment, update the status to "attended"
-        if ($this->fromStaffCalendar && $this->appointment_id) {
-            Appointment::where('id', $this->appointment_id)->update(['status' => 'attended']);
-            session()->flash('message', 'Medical record saved, appointment marked as attended.');
-        } else {
-            session()->flash('message', 'Medical record saved successfully.');
-        }
-    
-        return redirect()->route('staff-summary-report'); // Redirect to summary report
-    }
-
     public function render()
     {
         return view('livewire.add-medical-record', [
