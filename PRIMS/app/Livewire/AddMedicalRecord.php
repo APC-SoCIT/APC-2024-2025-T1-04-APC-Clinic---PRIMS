@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\MedicalRecord;
 use App\Models\Patient;
 use App\Models\Appointment;
+use App\Models\RfidCard;
 use Carbon\Carbon;
 
 class AddMedicalRecord extends Component
@@ -62,8 +63,22 @@ class AddMedicalRecord extends Component
 
     public function searchPatient()
     {
+        // Try search by APC ID number
         $patient = Patient::where('apc_id_number', $this->apc_id_number)->first();
 
+        // If not found, try RFID lookup
+        if (!$patient) {
+            $card = RfidCard::with('patient')
+                ->where('rfid_uid', $this->apc_id_number)
+                ->first();
+
+            if ($card && $card->patient) {
+                $patient = $card->patient;
+                $this->apc_id_number = $patient->apc_id_number;
+            }
+        }
+
+        // Fill fields if found
         if ($patient) {
             $this->email = $patient->email;
             $this->first_name = $patient->first_name;

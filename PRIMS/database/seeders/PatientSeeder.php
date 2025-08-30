@@ -78,6 +78,23 @@ class PatientSeeder extends Seeder
                 'zip_code' => '1630',
                 'country' => 'Philippines',
             ],
+            [
+                'email' => 'jmmiyabe@student.apc.edu.ph',
+                'first_name' => 'John Keisuke',
+                'middle_initial' => 'M',
+                'last_name' => 'Miyabe',
+                'gender' => 'Male',
+                'date_of_birth' => '2004-05-05',
+                'nationality' => 'Filipino',
+                'contact_number' => '09658014225',
+                'apc_id_number' => '2022-140145',
+                'street_number' => 'street',
+                'barangay' => 'street',
+                'city' => 'Taguig',
+                'province' => 'NCR',
+                'zip_code' => '1630',
+                'country' => 'Philippines',
+            ],
         ];
 
         foreach ($patients as $patient) {
