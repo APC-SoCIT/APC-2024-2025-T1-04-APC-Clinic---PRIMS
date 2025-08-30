@@ -18,12 +18,6 @@ class MedicalRecordController extends Controller
         $record = MedicalRecord::findOrFail($id);
         return view('view-medical-record', compact('record'));
     }
-    
-    public function archiveRecord()
-    {
-        $archiveRecord = MedicalRecord::archived()->get();
-        return view('archived-medical-records', compact('archiveRecord'));
-    }
 
     public function printMedicalRecord($appointmentId)
     {
