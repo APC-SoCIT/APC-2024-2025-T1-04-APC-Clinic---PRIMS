@@ -1,4 +1,4 @@
-<div class="p-6">
+<div class="p-6 bg-white dark:bg-gray-800 overflow-hidden shadow-lg sm:rounded-lg mt-5">
     <!-- Search bar -->
     <div class="flex gap-6 pb-5 justify-end">
         <input type="text" id="searchInput" placeholder="Search records..." class="px-4 py-2 border rounded-lg w-1/3">
