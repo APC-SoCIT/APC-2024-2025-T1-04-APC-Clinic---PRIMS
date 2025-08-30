@@ -47,6 +47,11 @@ class UserSeeder extends Seeder
                 'role' => 'clinic staff',
             ],
             [
+                'email' => 'jmmiyabe@student.apc.edu.ph',
+                'password' => 'jmmiyabe',
+                'role' => 'patient',
+            ],
+            [
                 'email' => 'junavendano@apc.edu.ph',
                 'password' => 'junavendano',
                 'role' => 'clinic staff',

@@ -37,4 +37,9 @@ class Patient extends Model
     {
         return $this->hasMany(Appointment::class);
     }
+
+    public function rfidCards()
+    {
+        return $this->hasMany(RfidCard::class);
+    }
 }

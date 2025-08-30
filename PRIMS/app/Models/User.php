@@ -68,12 +68,17 @@ class User extends Authenticatable
 
     public function patient()
     {
-    return $this->hasOne(Patient::class, 'user_id');
+        return $this->hasOne(Patient::class, 'user_id');
+    }
+
+    public function rfidCard()
+    {
+        return $this->hasOne(RfidCard::class);
     }
 
     public function clinicstaff()
     {
-    return $this->hasOne(ClinicStaff::class, 'user_id', 'id');
+        return $this->hasOne(ClinicStaff::class, 'user_id', 'id');
     }
 
     public function getFullNameAttribute()
