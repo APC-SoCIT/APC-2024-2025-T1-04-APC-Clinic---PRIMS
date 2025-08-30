@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\DoctorSchedule;
 use App\Models\Feedback;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AppointmentHistory extends Component
 {
@@ -139,6 +139,27 @@ class AppointmentHistory extends Component
         $this->consultationFeedback = null;
         $this->rating = 0;
     }
+
+    public function downloadMedicalRecord($appointmentId)
+    {
+        $appointment = Appointment::with(['patient', 'medicalRecord'])->find($appointmentId);
+
+        $medicalRecord = $appointment->medicalRecord;
+        $patient = $appointment->patient;
+
+        $data = [
+            'patient' => $patient,
+            'medicalRecord' => $medicalRecord,
+            'appointment' => $appointment,
+            'dateGenerated' => Carbon::now()->format('F j, Y, g:i A'),
+        ];
+
+        $pdf = Pdf::loadView('pdf.medical-record-pdf', $data);
+        return response()->streamDownload(function() use ($pdf) {
+            echo $pdf->output();
+        }, 'Medical_Record_' . $patient->first_name . '_' . $patient->last_name . '_' . Carbon::now()->format('Ymd_His') . '.pdf');
+    }
+
 
     public function render()
     {

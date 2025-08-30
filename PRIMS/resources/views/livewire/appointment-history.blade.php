@@ -162,10 +162,12 @@
                                                         @else
                                                             <p class="text-sm text-gray-500 mt-2">No medical findings available yet.</p>
                                                         @endif
+                                                        @if($appointment->medicalRecord)
                                                         <x-button class="mt-2 px-3 py-1 text-sm" 
-                                                            wire:click="">
-                                                            Print Medical Record
+                                                            wire:click="downloadMedicalRecord({{ $appointment->medicalRecord->id }})">
+                                                            Download Medical Record
                                                         </x-button>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>

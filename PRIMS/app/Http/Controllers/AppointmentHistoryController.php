@@ -31,26 +31,16 @@ class AppointmentHistoryController extends Controller
 
         return view('appointment-history', compact('appointmentHistory', 'hasUpcomingAppointment'));
     }
+    
+    public function generatePDF($appointmentId)
+    {
+        $appointment = Appointment::with(['patient', 'medicalRecord', 'feedback'])
+            ->where('id', $appointmentId)
+            ->where('patient_id', Auth::id())
+            ->firstOrFail();
 
-public function printMedicalRecord($appointmentId)
-{
-    // Find the appointment by ID
-    $appointment = Appointment::with(['patient', 'medicalRecords'])->findOrFail($appointmentId);
+        $pdf = Pdf::loadView('pdf.appointment-summary', compact('appointment'));
 
-    // Fetch the associated medical records (you can adjust this based on how you structure the records)
-    $medicalRecords = $appointment->medicalRecords;
-
-    // Retrieve the patient details
-    $patient = $appointment->patient;
-
-    // Generate PDF using DomPDF
-    $pdf = \PDF::loadView('pdf.medical-record-pdf', [
-        'patient' => $patient,
-        'medicalRecords' => $medicalRecords,
-        'appointment' => $appointment,
-    ]);
-
-    // Return the generated PDF file for download
-    return $pdf->download('medical_record_' . $appointment->id . '.pdf');
-}
+        return $pdf->download('appointment_summary_' . $appointment->id . '.pdf');
+    }
 }
