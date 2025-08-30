@@ -119,6 +119,7 @@ class AddMedicalRecord extends Component
         $medicalRecord = MedicalRecord::updateOrCreate(
             ['apc_id_number' => $this->apc_id_number],
             [
+                'appointment_id' => $this->appointment_id,
                 'email' => $this->email, 'first_name' => $this->first_name, 'mi' => $this->mi,
                 'last_name' => $this->last_name, 'dob' => $this->dob, 'age' => $this->age,
                 'gender' => $this->gender, 'contact_number' => $this->contact_number,

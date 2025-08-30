@@ -300,6 +300,7 @@ class PatientCalendar extends Component
             'appointment_id' => $this->appointmentId,
             'type' => 'booking',
             'emoji' => $this->selectedEmoji,
+            'rating' => null,
             'comment' => $this->bookingFeedback,
             'anonymous' => $this->anonymous,
         ]);

@@ -7,7 +7,8 @@ use App\Models\Appointment;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\DoctorSchedule;
-use App\Models\User;
+use App\Models\Feedback;
+
 
 class AppointmentHistory extends Component
 {
@@ -23,7 +24,9 @@ class AppointmentHistory extends Component
     public $feedbackAppointmentId;
     public $feedbackText;
     public $rating = 0;
-    
+    public $anonymous = false;
+    public $consultationFeedback;
+    public $appointmentId;
 
     public function mount()
     {
@@ -33,7 +36,8 @@ class AppointmentHistory extends Component
 
     public function loadAppointments()
     {
-        $this->appointmentHistory = Appointment::where('patient_id', $this->patient->id)
+        $this->appointmentHistory = Appointment::with(['feedback', 'medicalRecord'])
+            ->where('patient_id', $this->patient->id)
             ->orderBy('appointment_date', 'desc')
             ->get();
 
@@ -95,15 +99,45 @@ class AppointmentHistory extends Component
     public function openFeedbackModal($appointmentId)
     {
         $this->feedbackAppointmentId = $appointmentId;
+        $this->appointmentId = $appointmentId;
         $this->showFeedbackModal = true;
+    }
+
+    public function feedback()
+    {
+        return $this->hasOne(Feedback::class, 'appointment_id');
+    }
+
+    public function setRating($value)
+    {
+        $this->rating = $value;
+    }
+
+    public function submitConsultationFeedback()
+    {
+        $this->validate([
+            'rating' => 'required|integer|min:1|max:5'
+        ]);
+
+        Feedback::create([
+            'user_id' => Auth::id(),
+            'appointment_id' => $this->feedbackAppointmentId,
+            'type' => 'consultation',
+            'emoji' => null,
+            'rating' => $this->rating,
+            'comment' => $this->consultationFeedback,
+            'anonymous' => $this->anonymous,
+        ]);
+
+        $this->reset(['rating', 'consultationFeedback', 'anonymous', 'showFeedbackModal', 'feedbackAppointmentId']);
     }
 
     public function closeFeedbackModal()
     {
         $this->showFeedbackModal = false;
         $this->feedbackAppointmentId = null;
-        $this->feedbackText = null;
-        $this->rating = null;
+        $this->consultationFeedback = null;
+        $this->rating = 0;
     }
 
     public function render()

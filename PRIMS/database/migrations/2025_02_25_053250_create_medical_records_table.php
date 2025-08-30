@@ -35,7 +35,9 @@ return new class extends Migration {
             $table->date('last_visited')->nullable();
             $table->text('pe')->nullable();
             $table->text('prescription')->nullable();
+            $table->foreignId('appointment_id')->nullable()->constrained('appointments')->onDelete('set null');
             $table->timestamps();
+            $table->timestamp('archived_at')->nullable();
         });
     }
 

@@ -5,6 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Patient;
+use App\Models\MedicalRecord;
+use App\Models\User;
+use App\Models\ClinicStaff;
+use App\Models\Feedback;
 
 class Appointment extends Model
 {
@@ -26,9 +31,9 @@ class Appointment extends Model
         return $this->belongsTo(Patient::class, 'patient_id');
     }
 
-    public function medicalRecords()
+    public function medicalRecord()
     {
-        return $this->hasMany(MedicalRecord::class, 'appointment_id');
+        return $this->hasOne(MedicalRecord::class, 'appointment_id');
     }
 
 
@@ -40,6 +45,11 @@ class Appointment extends Model
     public function doctor()
     {
         return $this->belongsTo(ClinicStaff::class, 'clinic_staff_id');
+    }
+
+    public function feedback()
+    {
+        return $this->hasOne(Feedback::class, 'appointment_id');
     }
 
 }

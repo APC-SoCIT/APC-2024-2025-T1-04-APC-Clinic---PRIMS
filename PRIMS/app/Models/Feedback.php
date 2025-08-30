@@ -18,6 +18,7 @@ class Feedback extends Model
         'appointment_id',
         'type',
         'emoji',
+        'rating',
         'anonymous',
         'comment',
     ];

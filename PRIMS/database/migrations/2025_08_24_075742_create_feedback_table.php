@@ -16,7 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('appointment_id')->nullable()->constrained()->onDelete('cascade');
             $table->enum('type', ['booking', 'consultation']);
-            $table->enum('emoji', ['sad', 'flat', 'happy']);
+            $table->enum('emoji', ['sad', 'flat', 'happy'])->nullable();
+            $table->unsignedTinyInteger('rating')->nullable();
             $table->boolean('anonymous')->default(false);
             $table->text('comment')->nullable();
             $table->timestamps();
