@@ -22,17 +22,29 @@
                     <tr>
                         <td style="padding:30px; color:#333;">
                             <p style="font-size:16px; margin-bottom:15px;">
-                                Dear <strong>{{ $appointment->patient->first_name }},</strong>
+                                Dear <strong>{{ $appointment->patient->first_name }}</strong>,
                             </p>
                             <p style="font-size:16px; margin-bottom:10px;">
-                                Your appointment on <strong>{{ $selectedDate }}</strong> at <strong>{{ $selectedTime }}</strong> has been:
+                                We are sorry to inform you that your appointment on
+                                <strong>{{ $selectedDate }}</strong> at <strong>{{ $selectedTime }}</strong> has been:
                             </p>
-                            <div style="background-color:#f1f7ff; padding:10px; border-radius:8px; margin:10px 0; font-size:15px; item-align:center; text-color:#008000;">
-                                <p style="margin:5px 0; color:#008000; text-align:center"><strong>Approved</strong></p>
+                            <div style="background-color:#f1f7ff; padding:10px; border-radius:8px; margin:10px 0; font-size:15px;">
+                                <p style="margin:5px 0; color:#FF0000; text-align:center"><strong>Cancelled</strong></p>
                             </div>
                             <p style="font-size:15px; margin-top:20px; margin-bottom:30px;">
-                                Kindly come in early or on time on your appointment.
+                                due to <strong>"{{ $appointment->cancellation_reason }}."</strong>
                                 <br><br>
+                                Thank you for your consideration.
+                                <br><br>
+                                Kindly book another appointment.
+                            </p>
+                            <div style="text-align:center;">
+                                <a href="{{ url('/appointment') }}"
+                                    style="background-color:#1f3a93; color:white; text-decoration:none; padding:12px 25px; border-radius:6px; font-weight:bold; display:inline-block; font-size:15px;">
+                                    Book Appointment
+                                </a>
+                            </div>
+                            <p style="font-size:15px; margin-top:20px;">
                                 Thank you,
                                 <br>
                                 PRIMS - APC Clinic

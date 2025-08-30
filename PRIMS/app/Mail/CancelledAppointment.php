@@ -10,7 +10,7 @@ use App\Models\Appointment;
 use App\Models\Patient;
 use Carbon\Carbon;
 
-class ClinicAppointmentNotif extends Mailable
+class CancelledAppointment extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -19,25 +19,22 @@ class ClinicAppointmentNotif extends Mailable
     public $selectedTime;
     public $reason;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct(Appointment $appointment)
+    public function __construct($appointment)
     {
         $this->appointment = $appointment;
         $this->selectedDate = Carbon::parse($appointment->appointment_date)->format('F d, Y');
         $this->selectedTime = Carbon::parse($appointment->appointment_date)->format('h:i A');
-        $this->reason = $appointment->reason_for_visit;
+        $this->reason = $appointment->cancellation_reason;
     }
 
     public function build()
     {
-        return $this->subject('Appointment Notification')
-        ->view('emails.clinic-appointment-notif')
+        return $this->subject('Appointment Status')
+        ->view('emails.cancelled-appointment')
         ->with([
             'appointment'   => $this->appointment,
             'selectedDate'  => $this->selectedDate,
             'selectedTime'  => $this->selectedTime,
-        ]);      
+        ]);
     }
 }

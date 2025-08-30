@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Livewire\WithPagination;
 use App\Mail\ApprovedAppointment;
 use App\Mail\DeclinedAppointment;
+use App\Mail\CancelledAppointment;
 use Illuminate\Support\Facades\Mail;
 use App\Models\MedicalRecord;
 use App\Models\User;
@@ -250,6 +251,8 @@ class StaffCalendar extends Component
                 // Save the updated available times
                 $schedule->update(['available_times' => json_encode($availableTimes)]);
             }
+
+            Mail::to($appointment->patient->email)->send(new CancelledAppointment($appointment));
 
             // Reset values and close modal
             $this->showCancelModal = false;
