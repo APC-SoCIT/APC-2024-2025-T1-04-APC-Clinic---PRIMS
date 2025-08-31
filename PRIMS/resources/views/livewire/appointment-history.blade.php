@@ -157,8 +157,18 @@
                                                         <p class="text-lg font-semibold my-2">Medical Findings:</p>    
                                                         @if($appointment->medicalRecord)
                                                             <div class="mt-2 text-sm text-gray-700 -indent-5 pl-5 break-all">
-                                                                <p><strong>Physical Examination:</strong> {{ $appointment->medicalRecord->pe }}</p>
-                                                                <p><strong>Diagnosis:</strong> {{ $appointment->medicalRecord->diagnosis }}</p>
+                                                                <p><strong>Physical Examination:</strong> 
+                                                                    @forelse ($appointment->medicalRecord->physicalExaminations as $exam)
+                                                                        <p>- {{ $exam->section }}: 
+                                                                            {{ $exam->normal ? 'Normal' : 'Not Normal' }} 
+                                                                            @if($exam->findings)
+                                                                                (Findings: {{ $exam->findings }})
+                                                                            @endif
+                                                                        </p>
+                                                                    @empty
+                                                                        <p class="text-gray-500 italic">No physical exam records</p>
+                                                                    @endforelse</p>
+                                                                <p><strong>Diagnosis:</strong> {{ $appointment->medicalRecord->diagnosis }} - {{ $appointment->medicalRecord->diagnosis_notes }}</p>
                                                                 <p><strong>Prescription:</strong> {{ $appointment->medicalRecord->prescription }}</p>
                                                             </div>
                                                         @else
