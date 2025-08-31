@@ -28,12 +28,15 @@ class MedicalRecord extends Model
         'nationality',
         'reason',
         'description',
-        'diagnosis',
         'allergies',
         'past_medical_history',
         'family_history',
         'social_history',
-        'pe',
+        'obgyne_history',
+        'hospitalization',
+        'operation',
+        'immunizations',
+        'physical_examination',
         'prescription',
         'last_visited',
         'appointment_id',
@@ -55,6 +58,16 @@ class MedicalRecord extends Model
     public function appointment()
     {
         return $this->belongsTo(Appointment::class, 'appointment_id');
+    }
+
+        public function diagnoses()
+    {
+        return $this->hasMany(Diagnosis::class);
+    }
+
+    public function physicalExaminations()
+    {
+        return $this->hasMany(PhysicalExamination::class);
     }
 
     public function scopeArchived($query)

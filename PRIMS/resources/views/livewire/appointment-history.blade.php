@@ -130,10 +130,12 @@
                                                                 <p class="text-sm text-gray-700">You have already submitted feedback for this appointment. Thank you!</p>
                                                             @else
                                                             <p class="text-sm text-gray-700">Help us improve our services! Answering will only take around 1-2 minutes.</p>
-                                                            <x-button class="mt-2 px-3 py-1 text-sm" 
-                                                                wire:click="openFeedbackModal({{ $appointment->id }})">
-                                                                Submit Feedback
-                                                            </x-button>
+                                                            <div class="flex justify-end mt-2">
+                                                                <x-button class="px-3 py-1 text-sm" 
+                                                                    wire:click="openFeedbackModal({{ $appointment->id }})">
+                                                                    Submit Feedback
+                                                                </x-button>
+                                                            </div>
                                                             @endif
                                                         @else
                                                         <p class="text-sm text-gray-700">Feedback is only available for completed appointments.</p>
@@ -144,29 +146,41 @@
                                                     <div class="p-3 border border-gray-200 rounded-lg bg-white shadow-md transition-all duration-150 transform">
                                                         <p class="text-lg font-semibold mb-2">Medical Concerns:</p>    
                                                         @if($appointment->medicalRecord)
-                                                            <div class="mt-2">
-                                                                <p class="text-sm text-gray-700"><strong>Reason for Visit (Category):</strong> {{ $appointment->medicalRecord->reason }}</p>
-                                                                <p class="text-sm text-gray-700"><strong>Description of Symptoms:</strong> {{ $appointment->medicalRecord->description }}</p>
-                                                                <p class="text-sm text-gray-700"><strong>Allergies:</strong> {{ $appointment->medicalRecord->allergies }}</p>
+                                                            <div class="mt-2 text-sm text-gray-700 -indent-5 pl-5 break-all">
+                                                                <p><strong>Reason for Visit (Category):</strong> {{ $appointment->medicalRecord->reason }}</p>
+                                                                <p><strong>Description of Symptoms:</strong> {{ $appointment->medicalRecord->description }}</p>
+                                                                <p><strong>Allergies:</strong> {{ $appointment->medicalRecord->allergies }}</p>
                                                             </div>
                                                         @else
-                                                            <p class="text-sm text-gray-500 mt-2">No medical findings available yet.</p>
+                                                            <p class="text-sm text-gray-500 mt-2"><em>No medical concerns available yet.</em></p>
                                                         @endif
                                                         <p class="text-lg font-semibold my-2">Medical Findings:</p>    
                                                         @if($appointment->medicalRecord)
-                                                            <div class="mt-2">
-                                                                <p class="text-sm text-gray-700"><strong>Physical Examination:</strong> {{ $appointment->medicalRecord->pe }}</p>
-                                                                <p class="text-sm text-gray-700"><strong>Diagnosis:</strong> {{ $appointment->medicalRecord->diagnosis }}</p>
-                                                                <p class="text-sm text-gray-700"><strong>Prescription:</strong> {{ $appointment->medicalRecord->prescription }}</p>
+                                                            <div class="mt-2 text-sm text-gray-700 -indent-5 pl-5 break-all">
+                                                                <p><strong>Physical Examination:</strong> 
+                                                                    @forelse ($appointment->medicalRecord->physicalExaminations as $exam)
+                                                                        <p>- {{ $exam->section }}: 
+                                                                            {{ $exam->normal ? 'Normal' : 'Not Normal' }} 
+                                                                            @if($exam->findings)
+                                                                                (Findings: {{ $exam->findings }})
+                                                                            @endif
+                                                                        </p>
+                                                                    @empty
+                                                                        <p class="text-gray-500 italic">No physical exam records</p>
+                                                                    @endforelse</p>
+                                                                <p><strong>Diagnosis:</strong> {{ $appointment->medicalRecord->diagnosis }} - {{ $appointment->medicalRecord->diagnosis_notes }}</p>
+                                                                <p><strong>Prescription:</strong> {{ $appointment->medicalRecord->prescription }}</p>
                                                             </div>
                                                         @else
-                                                            <p class="text-sm text-gray-500 mt-2">No medical findings available yet.</p>
+                                                            <p class="text-sm text-gray-500 mt-2"><em>No medical findings available yet.</em></p>
                                                         @endif
                                                         @if($appointment->medicalRecord)
-                                                        <x-button class="mt-2 px-3 py-1 text-sm" 
-                                                            wire:click="downloadMedicalRecord({{ $appointment->medicalRecord->id }})">
-                                                            Download Medical Record
-                                                        </x-button>
+                                                            <div class="flex justify-end mt-2">
+                                                                <x-button class="px-3 py-1 text-sm" 
+                                                                    wire:click="downloadMedicalRecord({{ $appointment->medicalRecord->id }})">
+                                                                    Download Medical Record
+                                                                </x-button>
+                                                            </div>
                                                         @endif
                                                     </div>
                                                 </div>
