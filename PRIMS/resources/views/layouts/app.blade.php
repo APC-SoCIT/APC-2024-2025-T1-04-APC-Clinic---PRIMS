@@ -35,7 +35,17 @@
         @livewireScripts
 
         @if(auth()->check() && auth()->user()->hasRole('patient'))
-        <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/49096662.js"></script>
+        <script type="text/javascript">
+        (function(d, m){
+            var kommunicateSettings = 
+                {"appId":"3698278920dcab18ffb19053b4df46316","popupWidget":true,"automaticChatOpenOnNavigation":true};
+            var s = document.createElement("script"); s.type = "text/javascript"; s.async = true;
+            s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
+            var h = document.getElementsByTagName("head")[0]; h.appendChild(s);
+            window.kommunicate = m; m._globals = kommunicateSettings;
+        })(document, window.kommunicate || {});
+        /* NOTE : Use web server to view HTML files as real-time update will not work if you directly open the HTML file in the browser. */
+        </script>
         @endif
         
         
