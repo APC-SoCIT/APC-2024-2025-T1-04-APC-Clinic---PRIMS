@@ -168,7 +168,7 @@
                                                                     @empty
                                                                         <p class="text-gray-500 italic">No physical exam records</p>
                                                                     @endforelse</p>
-                                                                <p><strong>Diagnosis:</strong> {{ $appointment->medicalRecord->diagnosis }} - {{ $appointment->medicalRecord->diagnosis_notes }}</p>
+                                                                <p><strong>Diagnosis:</strong> {{ $appointment->medicalRecord->diagnoses->diagnosis }} - {{ $appointment->medicalRecord->diagnoses->diagnosis_notes }}</p>
                                                                 <p><strong>Prescription:</strong> {{ $appointment->medicalRecord->prescription }}</p>
                                                             </div>
                                                         @else
