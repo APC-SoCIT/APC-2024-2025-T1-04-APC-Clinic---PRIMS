@@ -58,7 +58,7 @@
 
                     <!-- Footer -->
                     <tr>
-                        <td style="background-color:#1f3a93; padding:15px; text-align:center; font-size:13px; color:#333;">
+                        <td style="background-color:#f1f1f1; padding:15px; text-align:center; font-size:13px; color:#333;">
                             This is an automated email from <strong>PRIMS - APC Clinic</strong>. 
                             Please do not reply to this message.
                         </td>
