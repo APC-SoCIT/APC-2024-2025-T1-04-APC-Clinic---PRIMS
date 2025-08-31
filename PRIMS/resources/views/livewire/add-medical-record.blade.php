@@ -531,124 +531,43 @@
                 </tbody>
             </table>
         </div>
-        <label class="block text-lg font-medium">Diagnosis</label>
-        <select wire:model="diagnosis" class="w-full p-2 border rounded-md mb-4">
-            <option value="">Select a diagnosis</option>
-            <optgroup label="Cardiology">
-                <option value="Hypertension">Hypertension</option>
-                <option value="BP Monitoring">BP Monitoring</option>
-                <option value="Bradycardia">Bradycardia</option>
-                <option value="Hypotension">Hypotension</option>
-                <option value="Angina">Angina</option>
-            </optgroup>
-            <optgroup label="Pulmonology">
-                <option value="URTI">URTI</option>
-                <option value="Pneumonia">Pneumonia</option>
-                <option value="PTB">PTB</option>
-                <option value="Bronchitis">Bronchitis</option>
-                <option value="Lung Pathology">Lung Pathology</option>
-                <option value="Acute Bronchitis">Acute Bronchitis</option>
-            </optgroup>
-            <optgroup label="Gastroenterology">
-                <option value="Acute Gastroenteritis">Acute Gastroenteritis</option>
-                <option value="GERD">GERD</option>
-                <option value="Hemorrhoids">Hemorrhoids</option>
-                <option value="Anorexia">Anorexia</option>
-            </optgroup>
-            <optgroup label="Musculo Skeletal">
-                <option value="Ligament Sprain">Ligament Sprain</option>
-                <option value="Muscle Strain">Muscle Strain</option>
-                <option value="Costochondritis">Costochondritis</option>
-                <option value="Soft Tissue Contusion">Soft Tissue Contusion</option>
-                <option value="Fracture">Fracture</option>
-                <option value="Gouty Arthritis">Gouty Arthritis</option>
-                <option value="Plantar Fasciitis">Plantar Fasciitis</option>
-                <option value="Dislocation">Dislocation</option>
-            </optgroup>
-            <optgroup label="Ophthalmology">
-                <option value="Conjunctivitis">Conjunctivitis</option>
-                <option value="Stye">Stye</option>
-                <option value="Foreign Body">Foreign Body</option>
-            </optgroup>
-            <optgroup label="ENT">
-                <option value="Stomatitis">Stomatitis</option>
-                <option value="Epistaxis">Epistaxis</option>
-                <option value="Otitis Media">Otitis Media</option>
-                <option value="Foreign Body Removal">Foreign Body Removal</option>
-            </optgroup>
-            <optgroup label="Neurology">
-                <option value="Tension Headache">Tension Headache</option>
-                <option value="Migraine">Migraine</option>
-                <option value="Vertigo">Vertigo</option>
-                <option value="Hyperventilation Syndrome">Hyperventilation Syndrome</option>
-                <option value="Insomnia">Insomnia</option>
-                <option value="Seizure">Seizure</option>
-                <option value="Bell's Palsy">Bell's Palsy</option>
-            </optgroup>
-            <optgroup label="Dermatology">
-                <option value="Folliculitis">Folliculitis</option>
-                <option value="Acne">Acne</option>
-                <option value="Burn">Burn</option>
-                <option value="Wound Dressing">Wound Dressing</option>
-                <option value="Infected Wound">Infected Wound</option>
-                <option value="Blister Wound">Blister Wound</option>
-                <option value="Seborrheic Dermatitis">Seborrheic Dermatitis</option>
-                <option value="Bruise/Hematoma">Bruise/Hematoma</option>
-            </optgroup>
-            <optgroup label="Nephrology">
-                <option value="Urinary Tract Infection">Urinary Tract Infection</option>
-                <option value="Renal Disease">Renal Disease</option>
-                <option value="Urolithiasis">Urolithiasis</option>
-            </optgroup>
-            <optgroup label="Endocrinology">
-                <option value="Hypoglycemia">Hypoglycemia</option>
-                <option value="Dyslipidemia">Dyslipidemia</option>
-                <option value="Diabetes Mellitus">Diabetes Mellitus</option>
-            </optgroup>
-            <optgroup label="OB-Gyne">
-                <option value="Dysmenorrhea">Dysmenorrhea</option>
-                <option value="Hormonal Imbalance">Hormonal Imbalance</option>
-                <option value="Pregnancy">Pregnancy</option>
-            </optgroup>
-            <optgroup label="Hematologic">
-                <option value="Leukemia">Leukemia</option>
-                <option value="Blood Dyscrasia">Blood Dyscrasia</option>
-                <option value="Anemia">Anemia</option>
-            </optgroup>
-            <optgroup label="Surgery">
-                <option value="Lacerated Wound">Lacerated Wound</option>
-                <option value="Punctured Wound">Punctured Wound</option>
-                <option value="Animal Bite">Animal Bite</option>
-                <option value="Superficial Abrasions">Superficial Abrasions</option>
-                <option value="Foreign Body Removal">Foreign Body Removal</option>
-            </optgroup>
-            <optgroup label="Allergology">
-                <option value="Contact Dermatitis">Contact Dermatitis</option>
-                <option value="Allergic Rhinitis">Allergic Rhinitis</option>
-                <option value="Bronchial Asthma">Bronchial Asthma</option>
-                <option value="Hypersensitivity">Hypersensitivity</option>
-            </optgroup>
-            <optgroup label="Psychological">
-                <option value="Post Traumatic Stress">Post Traumatic Stress</option>
-                <option value="Bipolar Disorder">Bipolar Disorder</option>
-                <option value="Clinical Depression">Clinical Depression</option>
-                <option value="Major Depressive Disorder">Major Depressive Disorder</option>
-                <option value="Agoraphobia">Agoraphobia</option>
-                <option value="ADHD">ADHD</option>
-                <option value="Anxiety Disorder">Anxiety Disorder</option>
-            </optgroup>
-        </select>
 
-        <label class="font-medium text-lg mt-4">Prescription</label>
-        <textarea wire:model="prescription" class="w-full border p-2 rounded mb-1" placeholder="Prescription"></textarea>
+        <!-- Diagnosis -->
+        <div class="my-6 bg-prims-yellow-1 rounded-lg p-4">
+            <h3 class="text-lg font-semibold">Diagnosis</h3>
+        </div>
+
+        <div class="mb-6 flex flex-row gap-4">
+            <div class="w-1/3">
+                <label class="block text-lg font-medium">Diagnosis</label>
+                <input list="diagnoses"
+                    wire:model.defer="diagnosis"
+                    wire:keydown.enter.prevent="applyAutocomplete"
+                    id="diagnosisInput"
+                    class="w-full p-2 border rounded-md mb-4"
+                    placeholder="Type diagnosis...">
+
+                <datalist id="diagnoses">
+                    @foreach ($diagnosisOptions as $option)
+                        <option value="{{ $option }}">
+                    @endforeach
+                </datalist>
+            </div>
+            <div class="w-2/3">
+                <label class="block text-lg font-medium">Diagnosis Notes:</label>
+                <textarea wire:model="diagnosis_notes" class="w-full border p-2 rounded mb-6" placeholder="Additional notes..."></textarea>
+            </div>
+        </div>
+
+        <!-- <label class="font-medium text-lg mt-4">Prescription</label>
+        <textarea wire:model="prescription" class="w-full border p-2 rounded mb-1" placeholder="Prescription"></textarea> -->
 
         <div class="mt-6 flex justify-end">
             <a href="/staff/medical-records" class="text-prims-azure-500 text-md m-2 mx-6 underline hover:text-prims-yellow-1 transition ease-in-out duration-150"> Back </a>
             <button 
             id="addRecordButton" 
             class="px-4 py-2 bg-prims-azure-500 text-white rounded-lg hover:bg-prims-azure-100"
-            wire:click="submit"
-        >
+            wire:click="submit">
             {{ $fromStaffCalendar ? 'Complete Appointment' : 'Submit' }}
             </button>
         </div>
