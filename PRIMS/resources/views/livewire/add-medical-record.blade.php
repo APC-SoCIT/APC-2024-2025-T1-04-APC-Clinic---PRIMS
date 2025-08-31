@@ -108,8 +108,9 @@
             <textarea wire:model="description" class="w-full border p-2 rounded mb-5" placeholder="Description of symptoms..."></textarea>
         </div>
 
+        <!-- Medical History -->
         <div class="mb-6 bg-prims-yellow-1 rounded-lg p-4">
-            <h3 class="text-lg font-semibold">I. Medical History</h3>
+            <h3 class="text-lg font-semibold">Medical History</h3>
         </div>
 
         <!-- Past Medical History -->
@@ -292,14 +293,244 @@
         </div>
 
         
-        <!-- Medical Findings -->
-        <div class="mt-6 bg-prims-yellow-1 rounded-lg p-4 mb-4">
-            <h3 class="text-lg font-semibold">Medical Findings</h3>
+        <!-- Physical Examination -->
+        <div class="my-6 bg-prims-yellow-1 rounded-lg p-4">
+            <h3 class="text-lg font-semibold">Physical Examination</h3>
         </div>
 
-        <label class="font-medium text-lg">Physical Examination</label>
-        <textarea wire:model="pe" class="w-full border p-2 rounded mt-2 mb-1" placeholder="Physical Examination"></textarea>
-
+        <div class="flex justify-center mb-6">
+            <table class="table-auto w-[80%] border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="border px-4 py-1">Section</th>
+                        <th class="border px-4 py-1">Normal</th>
+                        <th class="border px-4 py-1">Findings</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- General Appearance -->
+                    <tr>
+                        <td class="border px-4 py-1">General Appearance</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="general_appearance_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="general_appearance_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Skin -->
+                    <tr>
+                        <td class="border px-4 py-1">Skin</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="skin_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="skin_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Head and Scalp -->
+                    <tr>
+                        <td class="border px-4 py-1">Head and Scalp</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="head_and_scalp_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="head_and_scalp_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Eyes (OD) -->
+                    <tr>
+                        <td class="border px-4 py-1">Eyes (OD)</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="eyes_od_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="eyes_od_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Eyes (OS) -->
+                    <tr>
+                        <td class="border px-4 py-1">Eyes (OS)</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="eyes_os_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="eyes_os_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Corrected (OD) -->
+                    <tr>
+                        <td class="border px-4 py-1">Corrected (OD)</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="corrected_od_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="corrected_od_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Corrected (OS) -->
+                    <tr>
+                        <td class="border px-4 py-1">Corrected (OS)</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="corrected_os_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="corrected_os_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Pupils -->
+                    <tr>
+                        <td class="border px-4 py-1">Pupils</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="pupils_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="pupils_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Ears, Eardrums -->
+                    <tr>
+                        <td class="border px-4 py-1">Ears, Eardrums</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="ears_eardrums_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="ears_eardrums_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Nose, Sinuses -->
+                    <tr>
+                        <td class="border px-4 py-1">Nose, Sinuses</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="nose_sinuses_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="nose_sinuses_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Mouth, Throat -->
+                    <tr>
+                        <td class="border px-4 py-1">Mouth, Throat</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="mouth_throat_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="mouth_throat_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Neck, Thyroid -->
+                    <tr>
+                        <td class="border px-4 py-1">Neck, Thyroid</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="neck_thyroid_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="neck_thyroid_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Chest, Breast, Axilla -->
+                    <tr>
+                        <td class="border px-4 py-1">Chest, Breast, Axilla</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="chest_breast_axilla_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="chest_breast_axilla_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Heart- Cardiovascular -->
+                    <tr>
+                        <td class="border px-4 py-1">Heart- Cardiovascular</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="heart_cardiovascular_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="heart_cardiovascular_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Lungs- Respiratory -->
+                    <tr>
+                        <td class="border px-4 py-1">Lungs- Respiratory</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="lungs_respiratory_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="lungs_respiratory_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Abdomen -->
+                    <tr>
+                        <td class="border px-4 py-1">Abdomen</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="abdomen_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="abdomen_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Back, Flanks -->
+                    <tr>
+                        <td class="border px-4 py-1">Back, Flanks</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="back_flanks_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="back_flanks_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Mosculoskeletal -->
+                    <tr>
+                        <td class="border px-4 py-1">Mosculoskeletal</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="mosculoskeletal_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="mosculoskeletal_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Musculo-skeletal -->
+                    <tr>
+                        <td class="border px-4 py-1">Musculo-skeletal</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="musculo_skeletal_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="musculo_skeletal_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Extremities -->
+                    <tr>
+                        <td class="border px-4 py-1">Extremities</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="extremities_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="extremities_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Reflexes -->
+                    <tr>
+                        <td class="border px-4 py-1">Reflexes</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="reflexes_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="reflexes_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                    <!-- Neurological -->
+                    <tr>
+                        <td class="border px-4 py-1">Neurological</td>
+                        <td class="border px-4 py-1 text-center">
+                            <input type="checkbox" name="neurological_normal">
+                        </td>
+                        <td class="border px-4 py-1">
+                            <input type="text" name="neurological_findings" class="w-full border rounded px-2 py-1">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <label class="block text-lg font-medium">Diagnosis</label>
         <select wire:model="diagnosis" class="w-full p-2 border rounded-md mb-4">
             <option value="">Select a diagnosis</option>
