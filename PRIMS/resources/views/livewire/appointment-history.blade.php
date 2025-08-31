@@ -126,7 +126,7 @@
                                                     <div class="p-3 border border-gray-200 rounded-lg bg-white shadow-md transition-all duration-150 transform">
                                                         <p class="text-lg font-semibold mb-2">Feedback:</p>
                                                         @if($appointment->status == 'completed')    
-                                                            @if($appointment->feedback)
+                                                            @if($appointment->consultationFeedback)
                                                                 <p class="text-sm text-gray-700">You have already submitted feedback for this appointment. Thank you!</p>
                                                             @else
                                                             <p class="text-sm text-gray-700">Help us improve our services! Answering will only take around 1-2 minutes.</p>

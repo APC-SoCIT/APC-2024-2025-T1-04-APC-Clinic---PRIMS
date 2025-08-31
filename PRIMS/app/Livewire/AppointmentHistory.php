@@ -36,7 +36,7 @@ class AppointmentHistory extends Component
 
     public function loadAppointments()
     {
-        $this->appointmentHistory = Appointment::with(['feedback', 'medicalRecord.diagnoses', 'medicalRecord.physicalExaminations'])
+        $this->appointmentHistory = Appointment::with(['consultationFeedback', 'medicalRecord.diagnoses', 'medicalRecord.physicalExaminations'])
             ->where('patient_id', $this->patient->id)
             ->orderBy('appointment_date', 'desc')
             ->get();
