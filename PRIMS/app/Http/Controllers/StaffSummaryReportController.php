@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use App\Models\Dispensed;
 use App\Models\MedicalRecord;
+use App\Models\Diagnosis;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -55,7 +56,7 @@ class StaffSummaryReportController extends Controller
             });
 
         // Common Diagnoses
-        $commonDiagnoses = MedicalRecord::select('diagnosis', \DB::raw('COUNT(diagnosis) as count'))
+        $commonDiagnoses = Diagnosis::select('diagnosis', \DB::raw('COUNT(*) as count'))
             ->whereMonth('created_at', $month)
             ->whereYear('created_at', $year)
             ->groupBy('diagnosis')
@@ -64,14 +65,14 @@ class StaffSummaryReportController extends Controller
             ->get();
 
         return view('staff-summary-report', [
-            'attendedCount' => $attendedCount,
-            'cancelledCount' => $cancelledCount,
+            'attendedCount'   => $attendedCount,
+            'cancelledCount'  => $cancelledCount,
             'totalAppointments' => $totalAppointments,
-            'totalPatients' => $totalPatients,
-            'medications' => $medications,
-            'diagnoses' => $commonDiagnoses,
-            'selectedMonth' => $month,
-            'selectedYear' => $year,
+            'totalPatients'   => $totalPatients,
+            'medications'     => $medications,
+            'diagnoses'       => $commonDiagnoses,
+            'selectedMonth'   => $month,
+            'selectedYear'    => $year,
         ]);
     }
 
@@ -83,7 +84,7 @@ class StaffSummaryReportController extends Controller
         $submittedTo = $request->input('submittedTo');
         $staffName = Auth::user()->name;
 
-        // Fetch all possible diagnoses (ensuring blank ones are included)
+        // Predefined categories of diagnoses
         $allDiagnoses = [
             'Cardiology' => ['Hypertension', 'BP Monitoring', 'Bradycardia', 'Hypotension', 'Angina'],
             'Pulmonology' => ['URTI', 'Pneumonia', 'PTB', 'Bronchitis', 'Lung Pathology'],
@@ -93,11 +94,11 @@ class StaffSummaryReportController extends Controller
             'Nephrology' => ['Urinary Tract Infection'],
         ];
 
-        $existingDiagnoses = MedicalRecord::select('diagnosis', \DB::raw('COUNT(diagnosis) as count'))
+        // Count actual diagnoses occurrences from pivot
+        $existingDiagnoses = Diagnosis::select('diagnosis', \DB::raw('COUNT(*) as count'))
             ->whereMonth('created_at', $month)
             ->whereYear('created_at', $year)
             ->groupBy('diagnosis')
-            ->get()
             ->pluck('count', 'diagnosis')
             ->toArray();
 
@@ -107,13 +108,20 @@ class StaffSummaryReportController extends Controller
             $categorizedDiagnoses[$category] = [];
             foreach ($diagnoses as $diagnosis) {
                 $categorizedDiagnoses[$category][] = [
-                    'name' => $diagnosis,
+                    'name'  => $diagnosis,
                     'count' => $existingDiagnoses[$diagnosis] ?? 0,
                 ];
             }
         }
 
-        $pdf = Pdf::loadView('pdf.report', compact('month', 'year', 'to', 'submittedTo', 'staffName', 'categorizedDiagnoses'));
+        $pdf = Pdf::loadView('pdf.report', compact(
+            'month',
+            'year',
+            'to',
+            'submittedTo',
+            'staffName',
+            'categorizedDiagnoses'
+        ));
 
         return $pdf->download('accomplishment-report.pdf');
     }
