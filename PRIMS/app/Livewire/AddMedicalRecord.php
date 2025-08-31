@@ -7,16 +7,26 @@ use App\Models\MedicalRecord;
 use App\Models\Patient;
 use App\Models\Appointment;
 use App\Models\RfidCard;
+use App\Models\Diagnosis;
+use App\Models\PhysicalExamination;
 use Carbon\Carbon;
 
 class AddMedicalRecord extends Component
 {
-    public $apc_id_number, $email, $first_name, $mi, $last_name, $contact_number, $dob, $age, $gender, $street_number, $barangay, $city, $province, $zip_code, $country, $reason, $nationality, $description, $diagnosis, $allergies, $hospitalization, $operation, $pe, $prescription;
+    public $apc_id_number, $email, $first_name, $mi, $last_name, $contact_number, $dob, $age, $gender, $street_number, $barangay, $city, $province, $zip_code, $country, $reason, $nationality, $description, $allergies, $hospitalization, $operation, $prescription;
     public $appointment_id;
     public $fromStaffCalendar = false;
+    public $diagnosis, $diagnosis_notes;
+    public $sections = [
+        'General Appearance', 'Skin', 'Head and Scalp', 'Eyes (OD)', 'Eyes (OS)', 
+        'Corrected (OD)', 'Corrected (OS)', 'Pupils', 'Ears, Eardrums', 'Nose, Sinuses', 
+        'Mouth, Throat', 'Neck, Thyroid', 'Chest, Breast, Axilla', 
+        'Heart- Cardiovascular', 'Lungs- Respiratory', 'Abdomen', 'Back, Flanks', 
+        'Musculoskeletal', 'Extremities', 'Reflexes', 'Neurological'
+    ];
+    public $physical_examinations = [];
     public $diagnosisOptions = [
         'Hypertension', 'BP Monitoring', 'Bradycardia', 'Hypotension', 'Angina', 'URTI', 'Pneumonia', 'PTB', 'Bronchitis', 'Lung Pathology', 'Acute Bronchitis', 'Acute Gastroenteritis', 'GERD', 'Hemorrhoids', 'Anorexia', 'Ligament Sprain', 'Muscle Strain', 'Costochondritis', 'Soft Tissue Contusion', 'Fracture', 'Gouty Arthritis', 'Plantar Fasciitis', 'Dislocation', 'Conjunctivitis', 'Stye', 'Foreign Body', 'Stomatitis', 'Epistaxis', 'Otitis Media', 'Foreign Body Removal', 'Tension Headache', 'Migraine', 'Vertigo', 'Hyperventilation Syndrome', 'Insomnia', 'Seizure', 'Bell\'s Palsy', 'Folliculitis', 'Acne', 'Burn', 'Wound Dressing', 'Infected Wound', 'Blister Wound', 'Seborrheic Dermatitis', 'Bruise/Hematoma', 'Urinary Tract Infection', 'Renal Disease', 'Urolithiasis', 'Hypoglycemia', 'Dyslipidemia', 'Diabetes Mellitus', 'Dysmenorrhea', 'Hormonal Imbalance', 'Pregnancy', 'Leukemia', 'Blood Dyscrasia', 'Anemia', 'Lacerated Wound', 'Punctured Wound', 'Animal Bite', 'Superficial Abrasions', 'Contact Dermatitis', 'Allergic Rhinitis', 'Bronchial Asthma', 'Hypersensitivity', 'Post Traumatic Stress', 'Bipolar Disorder', 'Clinical Depression', 'Major Depressive Disorder', 'Agoraphobia', 'ADHD', 'Anxiety Disorder', 'Others'
-
     ];
 
     public $past_medical_history = [
@@ -30,7 +40,7 @@ class AddMedicalRecord extends Component
     ];
 
     public $social_history = [
-        'Smoker' => null, 'Vape' => null, 'Alcohol' => null, 'Medications' => null
+        'Vape' => null, 'Alcohol' => null, 'Medications' => null
     ];
 
     public $obgyne_history = [
@@ -75,10 +85,8 @@ class AddMedicalRecord extends Component
 
     public function searchPatient()
     {
-        // Try search by APC ID number
         $patient = Patient::where('apc_id_number', $this->apc_id_number)->first();
 
-        // If not found, try RFID lookup
         if (!$patient) {
             $card = RfidCard::with('patient')
                 ->where('rfid_uid', $this->apc_id_number)
@@ -90,7 +98,6 @@ class AddMedicalRecord extends Component
             }
         }
 
-        // Fill fields if found
         if ($patient) {
             $this->email = $patient->email;
             $this->first_name = $patient->first_name;
@@ -147,12 +154,25 @@ class AddMedicalRecord extends Component
     public function submit()
     {
         $this->validate([
-            'email' => 'required', 'apc_id_number' => 'required', 'first_name' => 'required',
-            'last_name' => 'required', 'dob' => 'required|date', 'age' => 'required', 'gender' => 'required',
-            'contact_number' => 'required', 'street_number' => 'required', 'barangay' => 'required',
-            'city' => 'required', 'province' => 'required', 'zip_code' => 'required', 'country' => 'required',
-            'nationality' => 'required', 'reason' => 'required', 'description' => 'required',
-            'diagnosis' => 'required', 'pe' => 'required', 'prescription' => 'required',
+            'email' => 'required',
+            'apc_id_number' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'dob' => 'required|date',
+            'age' => 'required',
+            'gender' => 'required',
+            'contact_number' => 'required',
+            'street_number' => 'required',
+            'barangay' => 'required',
+            'city' => 'required',
+            'province' => 'required',
+            'zip_code' => 'required',
+            'country' => 'required',
+            'nationality' => 'required',
+            'reason' => 'required',
+            'description' => 'required',
+            'diagnosis' => 'required',
+            'prescription' => 'required',
         ]);
 
         $medicalRecord = MedicalRecord::create([
@@ -175,22 +195,42 @@ class AddMedicalRecord extends Component
             'nationality' => $this->nationality,
             'reason' => $this->reason,
             'description' => $this->description,
-            'diagnosis' => $this->diagnosis,
             'allergies' => $this->allergies,
             'past_medical_history' => json_encode($this->past_medical_history),
             'family_history' => json_encode($this->family_history),
             'social_history' => json_encode($this->social_history),
+            'obgyne_history' => json_encode($this->obgyne_history),
+            'hospitalization' => $this->hospitalization,
+            'operation' => $this->operation,
+            'immunizations' => json_encode($this->immunizations),
             'last_visited' => now(),
-            'pe' => $this->pe,
             'prescription' => $this->prescription,
         ]);
 
+        if (!empty($this->diagnosis)) {
+            Diagnosis::create([
+                'medical_record_id' => $medicalRecord->id,
+                'diagnosis' => $this->diagnosis,
+                'diagnosis_notes' => $this->diagnosis_notes,
+            ]);
+        }
+
+        foreach ($this->physical_examinations as $section => $data) {
+            PhysicalExamination::create([
+                'medical_record_id' => $medicalRecord->id,
+                'section' => $section,
+                'normal' => !empty($data['normal']),
+                'findings' => $data['findings'] ?? null,
+            ]);
+        }
 
         if ($this->fromStaffCalendar && $this->appointment_id) {
             Appointment::where('id', $this->appointment_id)->update(['status' => 'completed']);
         }
 
         $this->reset();
+        $this->physical_examinations = [];
+        $this->diagnosis_notes = null;
         $this->dispatch('recordAdded');
     }
 

@@ -1,8 +1,11 @@
 <div>
     <div class="max-w-7xl mx-auto bg-white rounded-md shadow-md mt-5 p-6">
+
+        <!-- Personal Information -->
         <div class="bg-prims-yellow-1 rounded-lg p-4">
             <h2 class="text-lg font-semibold">Personal Information</h2>
         </div>
+
         <div class="grid grid-cols-4 gap-4 mt-4 items-center">
             <div>
                 <label class="font-bold text-lg">ID Number</label>
@@ -70,6 +73,7 @@
             </div>
         </div>
 
+        <!-- Medical Concern -->
         <div class="mt-6 bg-prims-yellow-1 rounded-lg p-4">
             <h2 class="text-lg font-semibold">Medical Concern</h2>
         </div>
@@ -80,14 +84,21 @@
 
             <label class="text-lg font-medium">Description of symptoms</label>
             <textarea class="w-full border p-2 rounded mb-5 bg-gray-100" readonly>{{ $record->description }}</textarea>
+        </div>
 
-            <label class="text-lg font-medium">Allergies</label>
+        <!-- Medical History -->
+        <div class="mb-6 bg-prims-yellow-1 rounded-lg p-4">
+            <h3 class="text-lg font-semibold">Medical History</h3>
+        </div>
+
+        <!-- Past Medical History -->
+        <div class="mb-3 bg-gray-300 rounded-lg p-1 flex justify-center">
+            <h3 class="text-md font-semibold">A. Past Medical History</h3>
+        </div>
+
+        <label class="text-lg font-medium">Allergies</label>
             <textarea class="w-full border p-2 rounded bg-gray-100" readonly>{{ $record->allergies }}</textarea>
-        </div>
 
-        <div class="mt-6 bg-prims-yellow-1 rounded-lg p-4">
-            <h3 class="text-lg font-semibold">Past Medical History</h3>
-        </div>
         <div class="m-4 text-md grid grid-cols-2 md:grid-cols-4 gap-4">
             @foreach($past_medical_history as $key => $value)
                 <div class="flex flex-col my-2 justify-between">
@@ -121,8 +132,9 @@
             @endforeach
         </div>
 
-        <div class="mt-6 bg-prims-yellow-1 rounded-lg p-4">
-            <h3 class="text-lg font-semibold">Family History</h3>
+        <!-- Family History -->
+        <div class="mb-3 bg-gray-300 rounded-lg p-1 flex justify-center">
+            <h3 class="text-md font-semibold">B. Family History</h3>
         </div>
 
         <div class="m-4 grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -145,8 +157,9 @@
             @endforeach
         </div>
 
-        <div class="mt-6 bg-prims-yellow-1 rounded-lg p-4">
-            <h3 class="text-lg font-semibold">Personal & Social History</h3>
+        <!-- Personal & Social History -->
+        <div class="mb-3 bg-gray-300 rounded-lg p-1 flex justify-center">
+            <h3 class="text-md font-semibold">C. Personal & Social History</h3>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 m-4">
@@ -177,7 +190,7 @@
 
             <!-- Other Social History Fields (e.g., Vape) -->
             @foreach ($social_history as $key => $value)
-                @if (!in_array($key, ['sticks_per_day', 'packs_per_year', 'alcohol', 'medications', 'Smoker', 'Alcohol', 'Medications']))
+                @if (in_array($key, ['Vape']))
                     <div class="flex flex-col">
                         <span class="text-lg font-bold">{{ ucfirst($key) }}</span>
                         <div class="flex gap-4 mt-1">
@@ -195,24 +208,148 @@
             @endforeach
         </div>
 
-        <div class="mt-6 bg-prims-yellow-1 rounded-lg p-4">
-            <h3 class="text-lg font-semibold">Medical Findings</h3>
+        <!-- OB-GYNE History -->
+        <div class="mb-3 bg-gray-300 rounded-lg p-1 flex justify-center">
+            <h3 class="text-md font-semibold">D. OB-GYNE History</h3>
+        </div>
+
+        <div class="m-4 text-md grid grid-cols-3">
+            @foreach ($obgyne_history as $key => $value)
+                <div class="flex flex-col my-2">
+                    <label class="text-lg font-semibold">{{ $key }}</label>
+                    <input type="text" value="{{ $value }}" class="border rounded-md p-1 w-[18rem]" readonly>
+                </div>
+            @endforeach
+        </div>
+
+        <!-- Hospitalization -->
+        <div class="mb-3 bg-gray-300 rounded-lg p-1 flex justify-center">
+            <h3 class="text-md font-semibold">E. Hospitalization</h3>
         </div>
 
         <div class="mt-4">
-            <!-- Physical Examination -->
-            <label class="text-lg font-medium">Physical Examination</label>
-            <textarea class="w-full border p-2 rounded mb-2 bg-gray-100" readonly>{{ $record->pe }}</textarea>
-
-            <!-- Diagnosis -->
-            <label class="text-lg font-medium">Diagnosis</label>
-            <input type="text" value="{{ $record->diagnosis }}" class="border mb-4 p-2 rounded w-full bg-gray-100" readonly>
-
-            <!-- Prescription -->
-            <label class="text-lg font-medium mt-4">Prescription</label>
-            <textarea class="w-full border p-2 rounded bg-gray-100" readonly>{{ $record->prescription }}</textarea>
+            <label class="text-lg font-medium">Hospitalization</label>
+            <textarea class="w-full border p-2 rounded mb-5 bg-gray-100" readonly>{{ $record->hospitalization }}</textarea>
         </div>
 
+        <!-- Operation -->
+        <div class="mb-3 bg-gray-300 rounded-lg p-1 flex justify-center">
+            <h3 class="text-md font-semibold">F. Operation</h3>
+        </div>
+
+        <div class="mt-4">
+            <label class="text-lg font-medium">Operation</label>
+            <textarea class="w-full border p-2 rounded mb-5 bg-gray-100" readonly>{{ $record->operation }}</textarea>
+        </div>
+
+        <!-- Immunizations -->
+        <div class="mb-3 bg-gray-300 rounded-lg p-1 flex justify-center">
+            <h3 class="text-md font-semibold">G. Immunizations</h3>
+        </div>
+
+        <div class="m-4 text-md grid grid-cols-2 md:grid-cols-4 gap-4">
+            @foreach ($immunizations as $key => $value)
+                <div class="flex flex-col my-2">
+                    <span class="font-medium text-lg">{{ $key }}</span>
+
+                    @if (in_array($key, ['COVID-19 1st', 'COVID-19 2nd', 'Booster 1', 'Booster 2']))
+                        <input type="text" 
+                            value="{{ $value }}" 
+                            class="border rounded px-2 py-1 mt-1 w-full bg-gray-100" 
+                            readonly />
+                    @else
+                        <div class="flex gap-4 mt-1">
+                            <label class="flex items-center space-x-1">
+                                <input type="radio" 
+                                    value="Yes" 
+                                    {{ $value === 'Yes' ? 'checked' : '' }} 
+                                    disabled>
+                                <span>Yes</span>
+                            </label>
+                            <label class="flex items-center space-x-1">
+                                <input type="radio" 
+                                    value="No" 
+                                    {{ $value === 'No' ? 'checked' : '' }} 
+                                    disabled>
+                                <span>No</span>
+                            </label>
+                        </div>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+
+        <!-- Physical Examination -->
+        <div class="mt-6 bg-prims-yellow-1 rounded-lg p-4">
+            <h3 class="text-lg font-semibold">Physical Examination</h3>
+        </div>
+
+        <div class="flex justify-center mb-6 mt-4">
+            <table class="table-auto w-[80%] border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="border px-4 py-2">Section</th>
+                        <th class="border px-4 py-2">Normal</th>
+                        <th class="border px-4 py-2">Findings</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($physical_exams as $exam)
+                        <tr>
+                            <td class="border px-4 py-2 font-medium">{{ $exam->section }}</td>
+                            <td class="border px-4 py-2 text-center">
+                                <input type="checkbox" {{ $exam->normal ? 'checked' : '' }} disabled>
+                            </td>
+                            <td class="border px-4 py-2">
+                                <input type="text" 
+                                    value="{{ $exam->findings ?? 'N/A' }}" 
+                                    class="w-full border rounded px-2 py-1 h-10 bg-gray-100" 
+                                    readonly>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="3" class="border px-4 py-2 text-center text-gray-500">
+                                No physical examination data available
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+
+        <!-- Diagnosis -->
+        <div class="mt-6 bg-prims-yellow-1 rounded-lg p-4">
+            <h3 class="text-lg font-semibold">Diagnosis</h3>
+        </div>
+
+        <div>
+            @forelse ($diagnoses as $diag)
+                <div class="my-4">
+                    <label class="text-lg font-medium">Diagnosis</label>
+                    <input type="text" 
+                        value="{{ $diag->diagnosis }}" 
+                        class="border p-2 rounded w-full bg-gray-100 mb-2" 
+                        readonly>
+
+                    <label class="text-lg font-medium">Notes</label>
+                    <textarea class="w-full border p-2 rounded bg-gray-100" readonly>{{ $diag->diagnosis_notes ?? 'No additional notes' }}</textarea>
+                </div>
+            @empty
+                <p class="text-gray-500 italic">No diagnosis data available</p>
+            @endforelse
+        </div>
+
+        <!-- Prescription -->
+        <div class="bg-prims-yellow-1 rounded-lg p-4">
+            <h3 class="text-lg font-semibold">Prescription</h3>
+        </div>
+
+        <div class="mt-4">
+            <label class="text-lg font-medium">Prescription</label>
+            <textarea class="w-full border p-2 rounded bg-gray-100" readonly>{{ $record->prescription ?? 'No prescription available' }}</textarea>
+        </div>
 
         <div class="mt-6 flex justify-end">
             <a href="{{ route('medical-records') }}">

@@ -9,14 +9,16 @@ return new class extends Migration {
     {
         Schema::create('medical_records', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->nullable();
+
+            // patient info
             $table->string('apc_id_number')->nullable();
             $table->string('first_name');
             $table->string('mi')->nullable();
             $table->string('last_name');
-            $table->date('dob');
-            $table->string('age')->nullable();
             $table->string('gender')->nullable();
+            $table->string('age')->nullable();
+            $table->date('dob');
+            $table->string('email')->nullable();
             $table->string('street_number')->nullable();
             $table->string('barangay')->nullable();
             $table->string('city')->nullable();
@@ -24,18 +26,29 @@ return new class extends Migration {
             $table->string('zip_code')->nullable();
             $table->string('country')->nullable();
             $table->string('contact_number')->nullable();
-            $table->text('reason');
             $table->text('nationality')->nullable();
-            $table->text('diagnosis')->nullable();
+
+            // medical concern
+            $table->text('reason');
             $table->text('description');
-            $table->text('allergies')->nullable();
-            $table->text('past_medical_history')->nullable();
-            $table->text('family_history')->nullable();
-            $table->text('social_history')->nullable();
             $table->date('last_visited')->nullable();
-            $table->text('pe')->nullable();
+
+            // medical history
+            $table->text('allergies')->nullable();
+            $table->json('past_medical_history')->nullable();
+            $table->json('family_history')->nullable();
+            $table->json('social_history')->nullable();
+            $table->json('obgyne_history')->nullable();
+            $table->text('hospitalization')->nullable();
+            $table->text('operation')->nullable();
+            $table->json('immunizations')->nullable();
+            
+            // prescription
             $table->text('prescription')->nullable();
+
+            // appointment reference
             $table->foreignId('appointment_id')->nullable()->constrained('appointments')->onDelete('set null');
+            
             $table->timestamps();
             $table->timestamp('archived_at')->nullable();
         });
