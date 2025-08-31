@@ -126,7 +126,7 @@
                                                     <div class="p-3 border border-gray-200 rounded-lg bg-white shadow-md transition-all duration-150 transform">
                                                         <p class="text-lg font-semibold mb-2">Feedback:</p>
                                                         @if($appointment->status == 'completed')    
-                                                            @if($appointment->feedback)
+                                                            @if($appointment->consultationFeedback)
                                                                 <p class="text-sm text-gray-700">You have already submitted feedback for this appointment. Thank you!</p>
                                                             @else
                                                             <p class="text-sm text-gray-700">Help us improve our services! Answering will only take around 1-2 minutes.</p>
@@ -168,7 +168,7 @@
                                                                     @empty
                                                                         <p class="text-gray-500 italic">No physical exam records</p>
                                                                     @endforelse</p>
-                                                                <p><strong>Diagnosis:</strong> {{ $appointment->medicalRecord->diagnosis }} - {{ $appointment->medicalRecord->diagnosis_notes }}</p>
+                                                                <p><strong>Diagnosis:</strong> {{ $appointment->medicalRecord->diagnoses->diagnosis }} - {{ $appointment->medicalRecord->diagnoses->diagnosis_notes }}</p>
                                                                 <p><strong>Prescription:</strong> {{ $appointment->medicalRecord->prescription }}</p>
                                                             </div>
                                                         @else
