@@ -47,9 +47,9 @@ class Appointment extends Model
         return $this->belongsTo(ClinicStaff::class, 'clinic_staff_id');
     }
 
-    public function feedback()
+    public function consultationFeedback()
     {
-        return $this->hasOne(Feedback::class, 'appointment_id');
+        return $this->hasOne(Feedback::class)->where('type', 'consultation');
     }
 
 }
