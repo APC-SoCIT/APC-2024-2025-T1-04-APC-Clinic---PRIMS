@@ -80,18 +80,6 @@
             <td colspan="5">{{ $patient->address ?? 'N/A' }}</td>
         </tr>
         <tr>
-            <th>Father’s Name</th>
-            <td>{{ $patient->father_name ?? 'N/A' }}</td>
-            <th>Occupation</th>
-            <td colspan="3">{{ $patient->father_occupation ?? 'N/A' }}</td>
-        </tr>
-        <tr>
-            <th>Mother’s/Guardian Name</th>
-            <td>{{ $patient->mother_name ?? 'N/A' }}</td>
-            <th>Occupation</th>
-            <td colspan="3">{{ $patient->mother_occupation ?? 'N/A' }}</td>
-        </tr>
-        <tr>
             <th>Emergency Contact</th>
             <td colspan="5">{{ $patient->emergency_contact ?? 'N/A' }} - {{ $patient->emergency_number ?? 'N/A' }}</td>
         </tr>
