@@ -24,9 +24,7 @@ class AppointmentController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $appointments = $patient->appointments; // Use the relationship
-
-        return view('appointments.index', compact('appointments'));
+        return view('patient-calendar');
     }
 
     // Function for patients to see their appointment history
@@ -66,7 +64,7 @@ class AppointmentController extends Controller
             Auth::user()
         );
 
-        return redirect()->route('appointments.index')
+        return redirect()->route('appointment')
             ->with('success', 'Appointment created successfully.');
     }
 }

@@ -211,11 +211,12 @@ class PatientCalendar extends Component
     
     public function checkExistingAppointment()
     {
-        return Appointment::where('patient_id', Auth::id())
+        return Appointment::where('patient_id', $this->patient->id)
             ->whereIn('status', ['pending', 'approved'])
-            ->where('appointment_date', '>=', Carbon::now()) // Ensure it's a future appointment
+            ->where('appointment_date', '>=', Carbon::now()) // future appointments only
             ->exists();
     }
+
 
     public function confirmAppointment()
     {
@@ -232,7 +233,7 @@ class PatientCalendar extends Component
     {
         $appointmentDate = Carbon::createFromFormat('Y-m-d h:i A', $this->selectedDate . ' ' . $this->selectedTime);
 
-        $existingAppointment = Appointment::where('patient_id', Auth::id())
+        $existingAppointment = Appointment::where('patient_id', $this->patient->id)
             ->where(function ($query) {
                 $query->whereIn('status', ['pending', 'approved'])
                     ->where('appointment_date', '>=', Carbon::now());
