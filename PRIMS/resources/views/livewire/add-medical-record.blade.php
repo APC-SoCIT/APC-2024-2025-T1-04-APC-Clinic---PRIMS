@@ -236,7 +236,7 @@
             <h3 class="text-md font-semibold">D. OB-GYNE History</h3>
         </div>
 
-        <div class="m-4 text-md grid grid-cols-3 gap-x-4 gap-y-3">
+        <div class="text-md grid grid-cols-3 gap-x-4 gap-y-3">
             @foreach ($obgyne_history as $key => $value)
                 <div class="flex flex-col my-2">
                     <span class="font-semibold text-lg">{{ $key }}</span>
@@ -365,7 +365,7 @@
         @if(count($diagnoses) < 5)
             <div class="mt-2">
                 <button type="button" wire:click="addDiagnosis"
-                    class="px-3 py-1 bg-green-500 text-white rounded-md">
+                    class="px-3 py-1 bg-prims-azure-100 text-white rounded-md">
                     + Add Diagnosis
                 </button>
             </div>
