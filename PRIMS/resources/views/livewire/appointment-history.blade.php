@@ -168,7 +168,12 @@
                                                                     @empty
                                                                         <p class="text-gray-500 italic">No physical exam records</p>
                                                                     @endforelse</p>
-                                                                <p><strong>Diagnosis:</strong> {{ $appointment->medicalRecord->diagnoses->diagnosis }} - {{ $appointment->medicalRecord->diagnoses->diagnosis_notes }}</p>
+                                                                <p><strong>Diagnosis:</strong></p>
+                                                                    @forelse ($appointment->medicalRecord->diagnoses as $diagnosis)
+                                                                        <p>- {{ $diagnosis->diagnosis }} @if($diagnosis->diagnosis_notes) (Notes: {{ $diagnosis->diagnosis_notes }}) @endif</p>
+                                                                    @empty
+                                                                        <p class="text-gray-500 italic">No diagnoses available</p>
+                                                                    @endforelse
                                                                 <p><strong>Prescription:</strong> {{ $appointment->medicalRecord->prescription }}</p>
                                                             </div>
                                                         @else
