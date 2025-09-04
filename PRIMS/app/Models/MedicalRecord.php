@@ -62,7 +62,7 @@ class MedicalRecord extends Model
 
         public function diagnoses()
     {
-        return $this->hasOne(Diagnosis::class);
+        return $this->hasMany(Diagnosis::class);
     }
 
     public function physicalExaminations()
