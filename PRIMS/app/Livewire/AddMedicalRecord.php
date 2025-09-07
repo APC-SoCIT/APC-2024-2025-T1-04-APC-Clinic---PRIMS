@@ -246,7 +246,7 @@ class AddMedicalRecord extends Component
             ->route('medical-records')
             ->with('toast', [
                 'style' => 'success',
-                'message' => 'Schedule saved successfully!'
+                'message' => 'Record saved successfully!'
             ]);
     }
 
