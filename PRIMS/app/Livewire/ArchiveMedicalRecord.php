@@ -17,7 +17,7 @@ class ArchiveMedicalRecord extends Component
     public function archiveRecord()
     {
         MedicalRecord::where('id', $this->record)->update(['archived_at' => now()]);
-        session()->flash('message', 'Medical Record archived successfully.');
+        $this->dispatch('notify', style: 'success', message: 'Medical Record archived successfully.');
     }
 
     public function render()

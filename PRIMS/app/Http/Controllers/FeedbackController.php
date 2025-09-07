@@ -27,6 +27,11 @@ class FeedbackController extends Controller
             'comment'        => $validated['comment'] ?? null,
         ]);
 
-        return redirect()->back()->with('success', 'Thank you for your feedback!');
+        return redirect()
+            ->back()
+            ->with('toast', [
+                'style' => 'success',
+                'message' => 'Thank you for your feedback!'
+            ]);
     }
 }

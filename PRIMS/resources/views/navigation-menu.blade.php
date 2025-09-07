@@ -23,9 +23,6 @@
                         {{ __('Appointment History') }}
                     </x-nav-link>
                     @elseif (Auth::user()->hasRole('clinic staff'))
-                    <!-- <x-nav-link href="{{ route('staff-dashboard') }}" :active="request()->routeIs('staff-dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link> -->
                     <x-nav-link href="{{ route('calendar') }}" :active="request()->routeIs('calendar')">
                         {{ __('Calendar') }}
                     </x-nav-link>

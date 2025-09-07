@@ -321,8 +321,6 @@ class StaffCalendar extends Component
             return;
         }
 
-
-        
         DoctorSchedule::updateOrCreate(
             ['doctor_id' => $this->selectedDoctor, 'date' => $this->selectedDate],
             ['available_times' => $this->selectedTimes]
