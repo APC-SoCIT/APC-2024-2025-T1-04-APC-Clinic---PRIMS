@@ -36,7 +36,11 @@ class StaffSummaryReportController extends Controller
             ->count();
 
         $totalAppointments = $attendedCount + $cancelledCount;
-        $totalPatients = MedicalRecord::distinct('apc_id_number')->count('apc_id_number');
+        $totalPatients = MedicalRecord::whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
+            ->distinct('apc_id_number')
+            ->count('apc_id_number');
+
 
         // Most Prescribed Medications
         $medications = Dispensed::select('inventory_id', \DB::raw('SUM(quantity_dispensed) as total_dispensed'))
@@ -74,53 +78,72 @@ class StaffSummaryReportController extends Controller
         ]);
     }
 
-    public function generateAccomplishmentReport(Request $request)
-    {
-        $month = $request->input('month', Carbon::now()->month);
-        $year = $request->input('year', Carbon::now()->year);
-        $to = $request->input('to');
-        $submittedTo = $request->input('submittedTo');
-        $staffName = Auth::user()->name;
-
-        // Predefined categories of diagnoses
-        $allDiagnoses = [
-            'Cardiology' => ['Hypertension', 'BP Monitoring', 'Bradycardia', 'Hypotension', 'Angina'],
-            'Pulmonology' => ['URTI', 'Pneumonia', 'PTB', 'Bronchitis', 'Lung Pathology'],
-            'Gastroenterology' => ['Acute Gastroenteritis', 'GERD', 'Hemorrhoids', 'Anorexia'],
-            'Neurology' => ['Tension Headache', 'Migraine', 'Vertigo', 'Insomnia'],
-            'Endocrinology' => ['Diabetes Mellitus', 'Dyslipidemia'],
-            'Nephrology' => ['Urinary Tract Infection'],
-        ];
-
-        // Count actual diagnoses occurrences from pivot
-        $existingDiagnoses = Diagnosis::select('diagnosis', \DB::raw('COUNT(*) as count'))
-            ->whereMonth('created_at', $month)
-            ->whereYear('created_at', $year)
-            ->groupBy('diagnosis')
-            ->pluck('count', 'diagnosis')
-            ->toArray();
-
-        // Organizing Diagnoses into Categories
-        $categorizedDiagnoses = [];
-        foreach ($allDiagnoses as $category => $diagnoses) {
-            $categorizedDiagnoses[$category] = [];
-            foreach ($diagnoses as $diagnosis) {
-                $categorizedDiagnoses[$category][] = [
-                    'name'  => $diagnosis,
-                    'count' => $existingDiagnoses[$diagnosis] ?? 0,
-                ];
-            }
-        }
-
-        $pdf = Pdf::loadView('pdf.report', compact(
-            'month',
-            'year',
-            'to',
-            'submittedTo',
-            'staffName',
-            'categorizedDiagnoses'
-        ));
-
-        return $pdf->download('accomplishment-report.pdf');
+public function generateAccomplishmentReport(Request $request)
+{
+    $type = $request->input('type', 'monthly');
+    $year = $request->input('year', Carbon::now()->year);
+    $month = $type === 'monthly' ? $request->input('month') : null;
+    if ($type === 'monthly' && !$month) {
+        $month = Carbon::now()->month; 
     }
+
+    $attendedCount = Appointment::when($month, fn($q) => $q->whereMonth('appointment_date', $month))
+        ->whereYear('appointment_date', $year)
+        ->where('status', 'completed')
+        ->count();
+
+    $cancelledCount = Appointment::when($month, fn($q) => $q->whereMonth('appointment_date', $month))
+        ->whereYear('appointment_date', $year)
+        ->where('status', 'cancelled')
+        ->count();
+
+    $totalPatients = MedicalRecord::when($month, fn($q) => $q->whereMonth('created_at', $month))
+        ->whereYear('created_at', $year)
+        ->distinct('apc_id_number')
+        ->count('apc_id_number');
+
+    $allDiagnoses = [
+        'Cardiology' => ['Hypertension', 'BP Monitoring', 'Bradycardia', 'Hypotension', 'Angina'],
+        'Pulmonology' => ['URTI', 'Pneumonia', 'PTB', 'Bronchitis', 'Lung Pathology'],
+        'Gastroenterology' => ['Acute Gastroenteritis', 'GERD', 'Hemorrhoids', 'Anorexia'],
+        'Neurology' => ['Tension Headache', 'Migraine', 'Vertigo', 'Insomnia'],
+        'Endocrinology' => ['Diabetes Mellitus', 'Dyslipidemia'],
+        'Nephrology' => ['Urinary Tract Infection'],
+    ];
+
+    $existingDiagnoses = Diagnosis::when($month, fn($q) => $q->whereMonth('created_at', $month))
+        ->whereYear('created_at', $year)
+        ->select('diagnosis', \DB::raw('COUNT(*) as count'))
+        ->groupBy('diagnosis')
+        ->pluck('count', 'diagnosis')
+        ->toArray();
+
+    $categorizedDiagnoses = [];
+    foreach ($allDiagnoses as $category => $diagList) {
+        foreach ($diagList as $diagName) {
+            $categorizedDiagnoses[$category][] = [
+                'name' => $diagName,
+                'count' => $existingDiagnoses[$diagName] ?? 0,
+            ];
+        }
+    }
+
+    $staffName = Auth::user()->name;
+
+    $pdf = Pdf::loadView('pdf.report', compact(
+        'month',
+        'year',
+        'type',
+        'totalPatients',
+        'attendedCount',
+        'cancelledCount',
+        'staffName',
+        'categorizedDiagnoses'
+    ));
+
+    return $pdf->stream('accomplishment-report.pdf');
+}
+
+
+
 }

@@ -131,10 +131,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/staff/summary-report', [StaffSummaryReportController::class, 'index'])->name('summary-report');
 
     // Route for generating accomplishment report
-    Route::get('/staff/generate-accomplishment-report', [
-        StaffSummaryReportController::class,
-        'generateAccomplishmentReport',
-    ])->name('generate.accomplishment.report');
+    Route::get('/generate-accomplishment-report', 
+        [App\Http\Controllers\StaffSummaryReportController::class, 'generateAccomplishmentReport']
+    )->name('generate.accomplishment.report');
 
     // About us Button Route
     Route::get('/about-us', function () {

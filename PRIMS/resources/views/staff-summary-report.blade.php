@@ -40,21 +40,29 @@
             </div>
         </form>
 
-        <!-- 🔹 Summary Cards -->
-        <div class="grid grid-cols-3 gap-4">
-            <div class="p-6 bg-white shadow-lg rounded-lg text-center">
-                <h3 class="text-lg font-semibold">Total Patients</h3>
-                <p class="text-2xl font-bold">{{ $totalPatients }}</p>
-            </div>
-            <div class="p-6 bg-white shadow-lg rounded-lg text-center">
-                <h3 class="text-lg font-semibold">Attended</h3>
-                <p class="text-2xl font-bold text-green-500">{{ $attendedCount }}</p>
-            </div>
-            <div class="p-6 bg-white shadow-lg rounded-lg text-center">
-                <h3 class="text-lg font-semibold">Cancelled</h3>
-                <p class="text-2xl font-bold text-red-500">{{ $cancelledCount }}</p>
-            </div>
-        </div>
+<!-- 🔹 Summary Cards -->
+<div class="grid grid-cols-3 gap-4">
+    <div class="p-6 bg-white shadow-lg rounded-lg text-center flex flex-col items-center">
+        <!-- Heroicon: Users -->
+        <x-heroicon-s-users class="h-10 w-10 text-blue-500 mb-2" />
+        <h3 class="text-lg font-semibold">Total Patients</h3>
+        <p class="text-2xl font-bold">{{ $totalPatients }}</p>
+    </div>
+
+    <div class="p-6 bg-white shadow-lg rounded-lg text-center flex flex-col items-center">
+        <!-- Heroicon: Check Circle -->
+        <x-heroicon-s-check-circle class="h-10 w-10 text-green-500 mb-2" />
+        <h3 class="text-lg font-semibold">Attended</h3>
+        <p class="text-2xl font-bold text-green-500">{{ $attendedCount }}</p>
+    </div>
+
+    <div class="p-6 bg-white shadow-lg rounded-lg text-center flex flex-col items-center">
+        <!-- Heroicon: X Circle -->
+        <x-heroicon-s-x-circle class="h-10 w-10 text-red-500 mb-2" />
+        <h3 class="text-lg font-semibold">Cancelled</h3>
+        <p class="text-2xl font-bold text-red-500">{{ $cancelledCount }}</p>
+    </div>
+</div>
 
         <!-- 🔹 Charts Section -->
         <div class="bg-white shadow-lg rounded-lg p-6 mt-6">
@@ -66,7 +74,9 @@
 
         <!-- 🔹 Diagnosis & Medications Charts (Side by Side) -->
         <div class="bg-white shadow-lg rounded-lg p-6 mt-6">
-            <h3 class="text-xl font-semibold text-gray-800 text-center mb-4">Top 5 Prescribed Medications & Most Common Diagnoses</h3>
+           <h3 class="text-xl font-semibold text-gray-800 text-center mb-4">
+            Top 5 Prescribed Medications & Top Reasons for Visit
+            </h3>
             <div class="flex space-x-8">
                 <div class="relative h-[400px] w-1/2 p-4 bg-white shadow-lg rounded-lg">
                     <canvas id="medicationChart"></canvas>
@@ -77,17 +87,26 @@
             </div>
         </div>
 
-        <!-- 🔹 Generate Accomplishment Report Button -->
+        <!-- Generate Accomplishment Report Button -->
         <div class="flex justify-end mt-6">
-            <a href="{{ route('generate.accomplishment.report') }}" class="bg-blue-500 text-white py-2 px-4 rounded-lg">
+            <button id="generateReport" class="bg-blue-500 text-white py-2 px-4 rounded-lg">
                 Generate Accomplishment Report
-            </a>
+            </button>
         </div>
+            <div id="reportModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+            <div class="bg-white rounded-lg p-6 w-80">
+                <h2 class="text-lg font-semibold mb-4">Select Report Type</h2>
+                <button data-type="monthly" class="w-full bg-blue-600 text-white py-2 mb-2 rounded">Monthly</button>
+                <button data-type="yearly" class="w-full bg-yellow-500 text-white py-2 rounded">Yearly</button>
+                <button id="closeModal" class="mt-4 w-full bg-gray-300 py-2 rounded">Cancel</button>
+            </div>
+</div>
+</div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // ✅ Doughnut: Attended vs Cancelled
+            // Doughnut: Attended vs Cancelled
             function renderAttendedCancelledDoughnut() {
                 const ctx = document.getElementById('appointmentMeter').getContext('2d');
                 const attendedCount  = @json($attendedCount);
@@ -125,7 +144,7 @@
                 });
             }
 
-            // ✅ Medications & Diagnoses
+            // Medications & Diagnoses
             function renderCharts() {
                 const ctxMed  = document.getElementById('medicationChart').getContext('2d');
                 const ctxDiag = document.getElementById('diagnosisChart').getContext('2d');
@@ -181,5 +200,37 @@
             renderCharts();
         });
     </script>
+
+    <script>
+        const modal = document.getElementById('reportModal');
+        const generateBtn = document.getElementById('generateReport');
+        const closeModal = document.getElementById('closeModal');
+
+        generateBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden'); // Show modal
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.classList.add('hidden'); // Hide modal
+        });
+
+        // Handle monthly/yearly buttons
+        modal.querySelectorAll('button[data-type]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const type = btn.getAttribute('data-type');
+                const month = "{{ $selectedMonth }}";
+                const year = "{{ $selectedYear }}";
+
+                if(type === 'monthly') {
+                    window.open(`{{ route('generate.accomplishment.report') }}?type=monthly&month=${month}&year=${year}`, '_blank');
+                } else {
+                    window.open(`{{ route('generate.accomplishment.report') }}?type=yearly&year=${year}`, '_blank');
+                }
+
+                modal.classList.add('hidden'); // Close modal
+            });
+        });
+        </script>
+
 
 </x-app-layout>
