@@ -36,9 +36,7 @@ class StaffSummaryReportController extends Controller
             ->count();
 
         $totalAppointments = $attendedCount + $cancelledCount;
-        $totalPatients = User::whereHas('roles', function ($query) {
-            $query->where('name', 'patient');
-        })->count();
+        $totalPatients = MedicalRecord::distinct('apc_id_number')->count('apc_id_number');
 
         // Most Prescribed Medications
         $medications = Dispensed::select('inventory_id', \DB::raw('SUM(quantity_dispensed) as total_dispensed'))
