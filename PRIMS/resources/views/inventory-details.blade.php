@@ -1,13 +1,19 @@
 <x-app-layout>
 
 <div class="py-3">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <x-prims-sub-header>
-            <a href="{{ url()->previous() }}" class="text-prims-yellow-1">
-                [ < back ]
-            </a>
-            / Inventory Details
-        </x-prims-sub-header>
+    <div class="max-w-[90rem] mx-auto sm:px-6 lg:px-8">
+        <div class="flex items-center gap-1">
+            <x-prims-sub-header>
+                <a href="{{ url()->previous() }}" class="pr-3">
+                    <
+                </a>
+            </x-prims-sub-header>
+            <div class="flex-1">
+                <x-prims-sub-header>
+                    Inventory Details
+                </x-prims-sub-header>
+            </div>
+        </div>
 
         @livewire('inventory-details', ['id' => request()->id])
 

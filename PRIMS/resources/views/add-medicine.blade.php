@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<div class="flex-1 p-6">
+<div class="flex-1 py-3">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -84,12 +84,18 @@
         }
     </style>
     <div class="w-[50%] mx-auto">
-        <x-prims-sub-header>
-            <a href="{{ url()->previous() }}" class="text-prims-yellow-1">
-                [ < back ]
-            </a>
-            / Add Medicine
-        </x-prims-sub-header>
+        <div class="flex items-center gap-1">
+            <x-prims-sub-header>
+                <a href="{{ url()->previous() }}" class="pr-3">
+                    <
+                </a>
+            </x-prims-sub-header>
+            <div class="flex-1">
+                <x-prims-sub-header>
+                    Add Medicine
+                </x-prims-sub-header>
+            </div>
+        </div>
     </div>
     <div class="container">
         <form action="{{ route('inventory.store') }}" method="POST">
@@ -97,11 +103,11 @@
 
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div class="form-group">
-                    <label for="brand">Brand:</label>
+                    <label for="brand">Brand Name:</label>
                     <input type="text" id="brand" name="brand" placeholder="e.g., Biogesic">
                 </div>
                 <div class="form-group">
-                    <label for="name">Name:</label>
+                    <label for="name">Generic Name:</label>
                     <input type="text" id="name" name="name" placeholder="e.g., Paracetamol" required>
                 </div>
             </div>
