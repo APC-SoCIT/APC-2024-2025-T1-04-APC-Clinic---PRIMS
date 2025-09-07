@@ -46,7 +46,12 @@ class InventoryController extends Controller
             'updated_by' => $clinicStaff->id,
         ]);
 
-        return redirect()->route('medical-inventory')->with('success', 'Medicine added successfully!');
+        return redirect()
+            ->route('medical-inventory')
+            ->with('toast', [
+                'style' => 'success',
+                'message' => 'Medicine added successfully!'
+            ]);
         
     }
 
