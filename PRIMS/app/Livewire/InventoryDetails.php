@@ -73,7 +73,12 @@ class InventoryDetails extends Component
         $this->reset(['patientId', 'amountDispensed', 'selectedPatient']);
 
         // Show success message
-        session()->flash('message', 'Medicine dispensed successfully.');
+        return redirect()
+            ->route('medical-inventory')
+            ->with('toast', [
+                'style' => 'success',
+                'message' => 'Medicine dispensed successfully!'
+            ]);
     }
 
     public function confirmDispose()
@@ -82,9 +87,12 @@ class InventoryDetails extends Component
             $this->inventory->delete();
         });
 
-        session()->flash('dispose-message', 'Medicine disposed successfully.');
-        
-        return redirect()->route('medical-inventory');
+        return redirect()
+            ->route('medical-inventory')
+            ->with('toast', [
+                'style' => 'success',
+                'message' => 'Medicine disposed successfully!'
+            ]);
     }
 
     public function openDisposeModal()
