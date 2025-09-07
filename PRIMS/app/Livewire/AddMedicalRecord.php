@@ -241,6 +241,13 @@ class AddMedicalRecord extends Component
         $this->physical_examinations = [];
         $this->diagnoses = [];
         $this->dispatch('recordAdded');
+
+        return redirect()
+            ->route('medical-records')
+            ->with('toast', [
+                'style' => 'success',
+                'message' => 'Schedule saved successfully!'
+            ]);
     }
 
     public function render()
