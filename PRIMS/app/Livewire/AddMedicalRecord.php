@@ -16,7 +16,7 @@ class AddMedicalRecord extends Component
     public $apc_id_number, $email, $first_name, $mi, $last_name, $contact_number, $dob, $age, $gender, $street_number, $barangay, $city, $province, $zip_code, $country, $reason, $nationality, $description, $allergies, $hospitalization, $operation, $prescription;
     public $appointment_id;
     public $fromStaffCalendar = false;
-    public $diagnosis, $diagnosis_notes;
+    public $diagnoses = [];
     public $sections = [
         'General Appearance', 'Skin', 'Head and Scalp', 'Eyes (OD)', 'Eyes (OS)', 
         'Corrected (OD)', 'Corrected (OS)', 'Pupils', 'Ears, Eardrums', 'Nose, Sinuses', 
@@ -81,6 +81,11 @@ class AddMedicalRecord extends Component
                 $this->nationality = $patient->nationality;
             }
         }
+
+        if (empty($this->diagnoses)) {
+            $this->addDiagnosis();
+        }
+
     }
 
     public function searchPatient()
@@ -139,17 +144,17 @@ class AddMedicalRecord extends Component
         'diagnosis.required' => 'Please select a diagnosis.',
     ];
 
-    public function applyAutocomplete()
+    public function addDiagnosis()
     {
-        foreach ($this->diagnosisOptions as $option) {
-            if (stripos($option, $this->diagnosis) === 0) {
-                $this->diagnosis = $option;
-                return;
-            }
-        }
-
-        $this->diagnosis = '';
+        $this->diagnoses[] = ['diagnosis' => '', 'notes' => ''];
     }
+
+    public function removeDiagnosis($index)
+    {
+        unset($this->diagnoses[$index]);
+        $this->diagnoses = array_values($this->diagnoses); // reindex
+    }
+
 
     public function submit()
     {
@@ -171,7 +176,8 @@ class AddMedicalRecord extends Component
             'nationality' => 'required',
             'reason' => 'required',
             'description' => 'required',
-            'diagnosis' => 'required',
+            'diagnoses' => 'required|array|min:1',
+            'diagnoses.*.diagnosis' => 'required|string',
             'prescription' => 'required',
         ]);
 
@@ -207,13 +213,16 @@ class AddMedicalRecord extends Component
             'prescription' => $this->prescription,
         ]);
 
-        if (!empty($this->diagnosis)) {
-            Diagnosis::create([
-                'medical_record_id' => $medicalRecord->id,
-                'diagnosis' => $this->diagnosis,
-                'diagnosis_notes' => $this->diagnosis_notes,
-            ]);
+        foreach ($this->diagnoses as $diag) {
+            if (!empty($diag['diagnosis'])) {
+                Diagnosis::create([
+                    'medical_record_id' => $medicalRecord->id,
+                    'diagnosis' => $diag['diagnosis'],
+                    'diagnosis_notes' => $diag['notes'] ?? null,
+                ]);
+            }
         }
+
 
         foreach ($this->physical_examinations as $section => $data) {
             PhysicalExamination::create([
@@ -230,7 +239,7 @@ class AddMedicalRecord extends Component
 
         $this->reset();
         $this->physical_examinations = [];
-        $this->diagnosis_notes = null;
+        $this->diagnoses = [];
         $this->dispatch('recordAdded');
     }
 

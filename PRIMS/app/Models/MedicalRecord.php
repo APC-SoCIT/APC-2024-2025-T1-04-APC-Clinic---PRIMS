@@ -60,9 +60,15 @@ class MedicalRecord extends Model
         return $this->belongsTo(Appointment::class, 'appointment_id');
     }
 
+    public function latestRecord()
+    {
+        return $this->hasOne(MedicalRecord::class, 'apc_id_number', 'apc_id_number')
+            ->latestOfMany('last_visited');
+    }
+
         public function diagnoses()
     {
-        return $this->hasOne(Diagnosis::class);
+        return $this->hasMany(Diagnosis::class);
     }
 
     public function physicalExaminations()

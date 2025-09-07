@@ -1,5 +1,5 @@
 <div class="pb-5">
-    <div class="max-w-7xl mx-auto bg-white rounded-md shadow-md mt-5 p-6">
+    <div class="bg-white rounded-md shadow-md mt-5 p-6">
 
         <!-- Personal Information -->
         <div class="bg-prims-yellow-1 rounded-lg p-4">
@@ -236,11 +236,11 @@
             <h3 class="text-md font-semibold">D. OB-GYNE History</h3>
         </div>
 
-        <div class="m-4 text-md grid grid-cols-3">
+        <div class="text-md grid grid-cols-3 gap-x-4 gap-y-3">
             @foreach ($obgyne_history as $key => $value)
                 <div class="flex flex-col my-2">
                     <span class="font-semibold text-lg">{{ $key }}</span>
-                    <input type="text" wire:model="obgyne_history.{{ $key }}" class="border rounded-md p-1 w-[18rem]">
+                    <input type="text" wire:model="obgyne_history.{{ $key }}" class="border rounded-md p-1 w-full">
                 </div>
             @endforeach
         </div>
@@ -333,27 +333,50 @@
             <h3 class="text-lg font-semibold">Diagnosis</h3>
         </div>
 
-        <div class="mb-6 flex flex-row gap-4">
-            <div class="w-1/3">
-                <label class="block text-lg font-medium">Diagnosis</label>
-                <input list="diagnoses"
-                    wire:model.defer="diagnosis"
-                    wire:keydown.enter.prevent="applyAutocomplete"
-                    id="diagnosisInput"
-                    class="w-full p-2 border rounded-md mb-4"
-                    placeholder="Type diagnosis...">
+        @foreach ($diagnoses as $index => $diag)
+            <div class="mb-6 flex flex-row gap-4 items-start">
+                <!-- Diagnosis Dropdown -->
+                <div class="w-1/3">
+                    <label class="block text-lg font-medium">Diagnosis</label>
+                    <select wire:model.defer="diagnoses.{{ $index }}.diagnosis"
+                            class="w-full p-2 border rounded-md">
+                        <option value="">-- Select Diagnosis --</option>
+                        @foreach ($diagnosisOptions as $option)
+                            <option value="{{ $option }}">{{ $option }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-                <datalist id="diagnoses">
-                    @foreach ($diagnosisOptions as $option)
-                        <option value="{{ $option }}">
-                    @endforeach
-                </datalist>
+                <!-- Notes -->
+                <div class="w-2/3">
+                    <label class="block text-lg font-medium">Diagnosis Notes:</label>
+                    <textarea wire:model.defer="diagnoses.{{ $index }}.notes"
+                        class="w-full border p-2 rounded"
+                        placeholder="Additional notes..."></textarea>
+                </div>
+
+                <!-- Remove -->
+                <button type="button" class="text-red-500" wire:click="removeDiagnosis({{ $index }})">✕</button>
             </div>
-            <div class="w-2/3">
-                <label class="block text-lg font-medium">Diagnosis Notes:</label>
-                <textarea wire:model="diagnosis_notes" class="w-full border p-2 rounded mb-6" placeholder="Additional notes..."></textarea>
+        @endforeach
+
+
+        <!-- Add Diagnosis Button -->
+        @if(count($diagnoses) < 5)
+            <div class="mt-2">
+                <button type="button" wire:click="addDiagnosis"
+                    class="px-3 py-1 bg-prims-azure-100 text-white rounded-md">
+                    + Add Diagnosis
+                </button>
             </div>
-        </div>
+        @endif
+
+        <datalist id="diagnosisOptions">
+            @foreach ($diagnosisOptions as $option)
+                <option value="{{ $option }}">
+            @endforeach
+        </datalist>
+
 
         <!-- Prescription -->
         <div class="my-6 bg-prims-yellow-1 rounded-lg p-4">

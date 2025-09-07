@@ -84,7 +84,12 @@
         }
     </style>
     <div class="w-[50%] mx-auto">
-        <x-prims-sub-header>Add Medicine</x-prims-sub-header>
+        <x-prims-sub-header>
+            <a href="{{ url()->previous() }}" class="text-prims-yellow-1">
+                [ < back ]
+            </a>
+            / Add Medicine
+        </x-prims-sub-header>
     </div>
     <div class="container">
         <form action="{{ route('inventory.store') }}" method="POST">

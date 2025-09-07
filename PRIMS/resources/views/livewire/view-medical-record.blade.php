@@ -1,5 +1,5 @@
 <div>
-    <div class="max-w-7xl mx-auto bg-white rounded-md shadow-md mt-5 p-6">
+    <div class="bg-white rounded-md shadow-md mt-5 p-6">
 
         <!-- Personal Information -->
         <div class="bg-prims-yellow-1 rounded-lg p-4">
@@ -213,11 +213,11 @@
             <h3 class="text-md font-semibold">D. OB-GYNE History</h3>
         </div>
 
-        <div class="m-4 text-md grid grid-cols-3">
+        <div class="text-md grid grid-cols-3 gap-x-4 gap-y-3">
             @foreach ($obgyne_history as $key => $value)
                 <div class="flex flex-col my-2">
                     <label class="text-lg font-semibold">{{ $key }}</label>
-                    <input type="text" value="{{ $value }}" class="border rounded-md p-1 w-[18rem]" readonly>
+                    <input type="text" value="{{ $value }}" class="border rounded-md p-1 w-full" readonly>
                 </div>
             @endforeach
         </div>
