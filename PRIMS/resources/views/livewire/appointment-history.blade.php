@@ -182,7 +182,7 @@
                                                         @if($appointment->medicalRecord)
                                                             <div class="flex justify-end mt-2">
                                                                 <x-button class="px-3 py-1 text-sm" 
-                                                                    wire:click="downloadMedicalRecord({{ $appointment->medicalRecord->id }})">
+                                                                    wire:click="downloadMedicalRecord({{ $appointment->id }})">
                                                                     Download Medical Record
                                                                 </x-button>
                                                             </div>

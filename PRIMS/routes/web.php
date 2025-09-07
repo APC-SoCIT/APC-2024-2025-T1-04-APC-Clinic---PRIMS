@@ -52,14 +52,8 @@ Route::middleware([
         return view('welcome');
     })->name('patient-homepage');
 
-    // Appointment route
-    Route::get('/appointment', function () {
-        $user = Auth::user();
-        if (!$user || !$user->hasRole('patient')) {
-            abort(403); // Forbidden
-        }
-        return view('patient-calendar');
-    })->name('appointment');
+    Route::get('/appointment', [AppointmentController::class, 'index'])
+     ->name('appointment');
 
     Route::post('/appointment/notif', [AppointmentController::class, 'store'])
     ->name('appointment.notif')
@@ -110,7 +104,7 @@ Route::middleware([
 
     // Appointment History route
     Route::get('/appointment-history', [AppointmentController::class, 'showAppointmentHistory'])
-    ->name('appointment-history');
+        ->name('appointment-history');
 
     Route::get('/print-medical-record/{appointmentId}', [MedicalRecordController::class, 'printMedicalRecord'])->name('print.medical.record');
     
