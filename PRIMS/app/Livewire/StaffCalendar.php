@@ -315,7 +315,7 @@ class StaffCalendar extends Component
 
     public function saveSchedule()
     {
-        // ✅ Validation
+        // Validation
         if (empty($this->selectedDoctor) || empty($this->selectedDate) || empty($this->selectedTimes)) {
             $this->dispatch('notify', style: 'danger', message: 'Please select a doctor, date, and at least one available time.');
             return;

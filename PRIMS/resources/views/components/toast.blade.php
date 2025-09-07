@@ -23,3 +23,18 @@
         <span x-text="message"></span>
     </div>
 </div>
+
+@if (session('toast'))
+    <script>
+        document.addEventListener("alpine:init", () => {
+            setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('notify', {
+                    detail: {
+                        style: "{{ session('toast')['style'] }}",
+                        message: "{{ session('toast')['message'] }}"
+                    }
+                }));
+            }, 100); // delay a bit so Alpine is ready
+        });
+    </script>
+@endif
