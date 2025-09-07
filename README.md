@@ -25,9 +25,6 @@ ELECTIVE - GAME DEVELOPMENT
 **TEAM MEMBER** || John Keisuke Miyabe - Bachelor of Science and Information Technology with Specialization in Mobile and Internet Technologies
 ELECTIVE - GAME DEVELOPMENT
 
-**TEAM MEMBER** || Reycel John Emmanuel Carcueva - Bachelor of Science and Information Technology with Specialization in Mobile and Internet Technologies
-ELECTIVE - AI AND UNSTRUCTURED DATA ANALYTICS
-
 
 **Patient Record and Interaction Management System (PRIMS)**
 The Patient Record and Interaction Management System, also known as PRIMS, project at Asia Pacific College’s Clinic is designed to streamline healthcare access for students and faculty. By enabling effortless appointment scheduling with nurses and managing clinic inventory, PRIMS aims to enhance the efficiency and effectiveness of healthcare services on campus. 
