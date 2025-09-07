@@ -52,7 +52,6 @@ class InventoryController extends Controller
                 'style' => 'success',
                 'message' => 'Medicine added successfully!'
             ]);
-        
     }
 
     public function show($id)
