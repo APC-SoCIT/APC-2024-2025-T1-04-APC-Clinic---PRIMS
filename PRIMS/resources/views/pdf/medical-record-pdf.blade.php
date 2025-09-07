@@ -161,23 +161,93 @@
 
     <div class="section-title">Findings</div>
     <table>
-        <tr><th>General Appearance</th><td>{{ $appointment->appearance ?? 'Normal' }}</td></tr>
-        <tr><th>Skin</th><td>{{ $appointment->skin ?? 'Normal' }}</td></tr>
-        <tr><th>Eyes</th><td>{{ $appointment->eyes ?? 'Normal' }}</td></tr>
-        <tr><th>Ears/Eardrums</th><td>{{ $appointment->ears ?? 'Normal' }}</td></tr>
-        <tr><th>Nose/Sinuses</th><td>{{ $appointment->nose ?? 'Normal' }}</td></tr>
-        <tr><th>Mouth/Throat</th><td>{{ $appointment->throat ?? 'Normal' }}</td></tr>
-        <tr><th>Neck/Thyroid</th><td>{{ $appointment->neck ?? 'Normal' }}</td></tr>
-        <tr><th>Chest/Breast/Axilla</th><td>{{ $appointment->chest ?? 'Normal' }}</td></tr>
-        <tr><th>Heart/Cardiovascular</th><td>{{ $appointment->heart ?? 'Normal' }}</td></tr>
-        <tr><th>Lungs/Respiratory</th><td>{{ $appointment->lungs ?? 'Normal' }}</td></tr>
-        <tr><th>Abdomen</th><td>{{ $appointment->abdomen ?? 'Normal' }}</td></tr>
-        <tr><th>Back/Flanks</th><td>{{ $appointment->back ?? 'Normal' }}</td></tr>
-        <tr><th>Musculoskeletal</th><td>{{ $appointment->musculoskeletal ?? 'Normal' }}</td></tr>
-        <tr><th>Extremities</th><td>{{ $appointment->extremities ?? 'Normal' }}</td></tr>
-        <tr><th>Reflexes</th><td>{{ $appointment->reflexes ?? 'Normal' }}</td></tr>
-        <tr><th>Neurological</th><td>{{ $appointment->neuro ?? 'Normal' }}</td></tr>
+        <tr>
+            <th>Exam</th>
+            <th>Status</th>
+            <th>Findings</th>
+        </tr>
+        <tr>
+            <td>General Appearance</td>
+            <td>{{ $appointment->appearance ?? 'Normal' }}</td>
+            <td>{{ $appointment->appearance_findings ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>Skin</td>
+            <td>{{ $appointment->skin ?? 'Normal' }}</td>
+            <td>{{ $appointment->skin_findings ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>Eyes</td>
+            <td>{{ $appointment->eyes ?? 'Normal' }}</td>
+            <td>{{ $appointment->eyes_findings ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>Ears/Eardrums</td>
+            <td>{{ $appointment->ears ?? 'Normal' }}</td>
+            <td>{{ $appointment->ears_findings ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>Nose/Sinuses</td>
+            <td>{{ $appointment->nose ?? 'Normal' }}</td>
+            <td>{{ $appointment->nose_findings ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>Mouth/Throat</td>
+            <td>{{ $appointment->throat ?? 'Normal' }}</td>
+            <td>{{ $appointment->throat_findings ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>Neck/Thyroid</td>
+            <td>{{ $appointment->neck ?? 'Normal' }}</td>
+            <td>{{ $appointment->neck_findings ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>Chest/Breast/Axilla</td>
+            <td>{{ $appointment->chest ?? 'Normal' }}</td>
+            <td>{{ $appointment->chest_findings ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>Heart/Cardiovascular</td>
+            <td>{{ $appointment->heart ?? 'Normal' }}</td>
+            <td>{{ $appointment->heart_findings ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>Lungs/Respiratory</td>
+            <td>{{ $appointment->lungs ?? 'Normal' }}</td>
+            <td>{{ $appointment->lungs_findings ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>Abdomen</td>
+            <td>{{ $appointment->abdomen ?? 'Normal' }}</td>
+            <td>{{ $appointment->abdomen_findings ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>Back/Flanks</td>
+            <td>{{ $appointment->back ?? 'Normal' }}</td>
+            <td>{{ $appointment->back_findings ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>Musculoskeletal</td>
+            <td>{{ $appointment->musculoskeletal ?? 'Normal' }}</td>
+            <td>{{ $appointment->musculoskeletal_findings ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>Extremities</td>
+            <td>{{ $appointment->extremities ?? 'Normal' }}</td>
+            <td>{{ $appointment->extremities_findings ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>Reflexes</td>
+            <td>{{ $appointment->reflexes ?? 'Normal' }}</td>
+            <td>{{ $appointment->reflexes_findings ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>Neurological</td>
+            <td>{{ $appointment->neuro ?? 'Normal' }}</td>
+            <td>{{ $appointment->neuro_findings ?? '' }}</td>
+        </tr>
     </table>
+
 
     <!-- Diagnosis -->
     <div class="section-title">Diagnosis</div>
