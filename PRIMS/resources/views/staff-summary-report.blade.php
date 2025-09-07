@@ -87,35 +87,52 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            function renderDoughnut() {
+            // ✅ Doughnut: Attended vs Cancelled
+            function renderAttendedCancelledDoughnut() {
                 const ctx = document.getElementById('appointmentMeter').getContext('2d');
-                const attendedCount = @json($attendedCount);
+                const attendedCount  = @json($attendedCount);
                 const cancelledCount = @json($cancelledCount);
-                const totalAppointments = attendedCount + cancelledCount;
-                const attendedPercentage = totalAppointments > 0 ? (attendedCount / totalAppointments) * 100 : 0;
-                const cancelledPercentage = totalAppointments > 0 ? (cancelledCount / totalAppointments) * 100 : 0;
+                const data  = [attendedCount, cancelledCount];
+                const total = data.reduce((a, b) => a + b, 0);
 
                 new Chart(ctx, {
                     type: 'doughnut',
                     data: {
                         labels: ['Attended Appointments', 'Cancelled Appointments'],
                         datasets: [{
-                            data: [attendedPercentage, cancelledPercentage],
+                            data,
                             backgroundColor: ['#4CAF50', '#FF5733'],
                             borderWidth: 2
                         }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, cutout: '70%', legend: { position: 'bottom' } }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        const value = context.parsed;
+                                        const pct = total ? ((value / total) * 100).toFixed(1) : 0;
+                                        return `${context.label}: ${value} (${pct}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 });
             }
 
+            // ✅ Medications & Diagnoses
             function renderCharts() {
-                const ctxMed = document.getElementById('medicationChart').getContext('2d');
+                const ctxMed  = document.getElementById('medicationChart').getContext('2d');
                 const ctxDiag = document.getElementById('diagnosisChart').getContext('2d');
                 const medications = @json($medications);
-                const diagnoses = @json($diagnoses);
+                const diagnoses   = @json($diagnoses);
 
-                // ✅ Fixed: Medication Graph is now Horizontal Bar Chart
+                // Medications: Horizontal Bar
                 new Chart(ctxMed, {
                     type: 'bar',
                     data: {
@@ -141,18 +158,28 @@
                     }
                 });
 
+                // Diagnoses: Pie Chart
                 new Chart(ctxDiag, {
                     type: 'pie',
                     data: {
                         labels: diagnoses.map(d => d.diagnosis),
-                        datasets: [{ data: diagnoses.map(d => d.count), backgroundColor: ['#FF9F40', '#FF6384', '#36A2EB'] }]
+                        datasets: [{
+                            data: diagnoses.map(d => d.count),
+                            backgroundColor: ['#FF9F40', '#FF6384', '#36A2EB', '#4CAF50', '#9C27B0']
+                        }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, legend: { position: 'top' } }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'top' } }
+                    }
                 });
             }
 
-            renderDoughnut();
+            // Run all charts
+            renderAttendedCancelledDoughnut();
             renderCharts();
         });
     </script>
+
 </x-app-layout>
