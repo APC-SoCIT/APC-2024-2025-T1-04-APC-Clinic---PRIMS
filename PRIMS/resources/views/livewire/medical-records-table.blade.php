@@ -47,10 +47,10 @@
                         <td class="px-6 py-3 text-left text-md">{{ $record->email }}</td>
                         <td class="px-6 py-3 text-left text-md">{{ $record->last_visited }}</td>
                         <td>
-                            <button wire:click="toggleExpand('{{ $record->apc_id_number }}')"
-                                    class="px-4 py-1 bg-blue-500 text-white rounded">
+                            <x-button wire:click="toggleExpand('{{ $record->apc_id_number }}')"
+                                    class="px-4 py-1">
                                 View Records
-                            </button>
+                            </x-button>
                         </td>
                     </tr>
 
@@ -75,7 +75,11 @@
                                             @foreach ($this->getPatientRecords($record->apc_id_number) as $med)
                                                 <tr>
                                                     <td class="text-center">
-                                                        <input type="checkbox" disabled {{ $med->appointment_id ? 'checked' : '' }}>
+                                                        @if ($med->appointment_id)
+                                                            <span class="px-2 bg-green-100 text-green-700 rounded-2xl text-xs">Appointment</span>
+                                                        @else
+                                                            <span class="px-2 bg-blue-100 text-blue-700 rounded-2xl text-xs">Walk-in</span>
+                                                        @endif
                                                     </td>
                                                     <td class="text-center">{{ \Carbon\Carbon::parse($med->last_visited)->format('M j, Y') }}</td>
                                                     <td class="text-center">{{ $med->reason }}</td>
