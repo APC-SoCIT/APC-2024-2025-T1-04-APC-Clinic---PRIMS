@@ -1,5 +1,5 @@
 <div class="pb-5">
-    <div class="max-w-7xl mx-auto bg-white rounded-md shadow-md mt-5 p-6">
+    <div class="bg-white rounded-md shadow-md mt-5 p-6">
 
         <!-- Personal Information -->
         <div class="bg-prims-yellow-1 rounded-lg p-4">
