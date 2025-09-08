@@ -12,6 +12,14 @@ use App\Http\Controllers\FeedbackController;
 $url = config('app.url');
 URL::forceRootUrl($url);
 
+Route::get('/staff/dental-form', function () {
+        $user = Auth::user();
+        if (!$user || !$user->hasRole('clinic staff')) {
+            abort(403); // Forbidden
+        }
+        return view('dental-form');
+    })->name('dental-form');
+
 Route::get('/', function () {
     return view('auth.login');
 });
