@@ -58,7 +58,7 @@ class PatientSeeder extends Seeder
                 'date_of_birth' => '2002-10-05',
                 'nationality' => 'Filipino',
                 'contact_number' => '09129087654',
-                'apc_id_number' => '2022-140276',
+                'apc_id_number' => '2022-140267',
                 'address' => 'Taguig City',
             ],
             [

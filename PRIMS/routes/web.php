@@ -165,6 +165,7 @@ Route::middleware([
         return view('about-us');
     })->name('about-us');
 
+
     // About us Button Route
     Route::get('/about-us', function () {
         return view('about-us');

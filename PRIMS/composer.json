@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "^3.1",
+        "blade-ui-kit/blade-heroicons": "^2.6",
         "google/apiclient": "^2.18",
         "laravel/framework": "^11.31",
         "laravel/jetstream": "^5.3",
